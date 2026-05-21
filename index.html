@@ -18,6 +18,14 @@
     
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
+        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
+        window.db = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+    </script>
 </head>
 <body>
 
@@ -857,13 +865,7 @@
         </div>
     </footer>
 
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
-        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
-        const supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
-    </script>
+
     <!-- JS Scripts -->
     <script src="app.js"></script>
 </body>

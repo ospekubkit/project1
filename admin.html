@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
+        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
+        window.db = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+    </script>
+    
     <style>
         :root {
             --primary: #042125;
@@ -1126,7 +1134,7 @@
         async function loadOrdersData() {
             // Load dari Supabase
             try {
-                const { data, error } = await supabase
+                const { data, error } = await db
                     .from('orders')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1269,7 +1277,7 @@
             if (confirm(`Konfirmasi pembayaran lunas untuk Order #${orderId}? Invoice akan otomatis dikirim ke email mahasiswa.`)) {
                 try {
                     // 1. Update status di Supabase
-                    const { error } = await supabase
+                    const { error } = await db
                         .from('orders')
                         .update({ status: 'LUNAS (Terverifikasi)' })
                         .eq('id', orderId);
@@ -1306,7 +1314,7 @@
         async function deleteOrder(orderId) {
             if (confirm(`Apakah Anda yakin ingin menghapus data pesanan #${orderId} secara permanen? Tindakan ini tidak dapat dibatalkan.`)) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await db
                         .from('orders')
                         .delete()
                         .eq('id', orderId);
@@ -1326,7 +1334,7 @@
             if (confirm('PERINGATAN KERAS! Apakah Anda yakin ingin mengosongkan seluruh database pesanan di browser ini? Tindakan ini akan menghapus SEMUA pesanan.')) {
                 try {
                     // Karena RLS atau untuk safety, delete all biasanya diblock, tapi asumsikan kita punya akses
-                    const { error } = await supabase
+                    const { error } = await db
                         .from('orders')
                         .delete()
                         .neq('id', '0'); // trik hapus semua
@@ -1490,12 +1498,6 @@
             }, 3000);
         }
     </script>
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
-        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
-        const supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
-    </script>
+
 </body>
 </html>

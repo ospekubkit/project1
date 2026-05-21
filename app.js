@@ -690,7 +690,7 @@ async function simulatePaymentSuccess() {
 
     // PERSIST ORDER TO SUPABASE
     try {
-        const { error } = await supabase.from('orders').insert([{
+        const { error } = await db.from('orders').insert([{
             id: randomOrderId,
             name: nameVal,
             nim: nimVal,
