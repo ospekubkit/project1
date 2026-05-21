@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(assets|.*\\.(png|jpg|jpeg|gif|svg|ico|css|js))",
+      "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
