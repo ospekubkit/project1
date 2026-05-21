@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | OspekUB.kit Pre-Order</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #042125;
+            --secondary: #35646d;
+            --accent: #d4af37;
+            --accent-light: rgba(212, 175, 55, 0.1);
+            --bg-dark: #021113;
+            --bg-white: #ffffff;
+            --bg-panel: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-light: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #a0aec0;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 10% 20%, rgba(4, 33, 37, 0.4) 0%, rgba(2, 17, 19, 0.95) 90%);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           LOGIN SCREEN
+           ========================================================================== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        .login-card {
+            background: rgba(4, 33, 37, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-card img {
+            width: 70px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--accent));
+        }
+
+        .login-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+        }
+
+        .login-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            padding: 14px 14px 14px 44px;
+            border-radius: 30px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-admin {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, #b08d1a 100%);
+            color: var(--primary);
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ==========================================================================
+           MAIN ADMIN LAYOUT
+           ========================================================================== */
+        .admin-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            background: rgba(4, 33, 37, 0.85);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .sidebar-logo span {
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-item button {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item button i {
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .nav-item button:hover,
+        .nav-item.active button {
+            color: var(--text-light);
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        .nav-item.active button i {
+            color: var(--accent);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--danger);
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: var(--danger);
+        }
+
+        /* Main Content Viewport */
+        .main-viewport {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .header-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header-title h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            background: var(--secondary);
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-action:hover {
+            background: #407983;
+            transform: translateY(-1px);
+        }
+
+        /* Dashboard Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-info span {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .stat-icon {
+            background: rgba(255, 255, 255, 0.05);
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--accent);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Panel Wrapper Card */
+        .panel-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .panel-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 12px;
+        }
+
+        /* ==========================================================================
+           TABULAR REGISTRY (ORDERS TABLE)
+           ========================================================================== */
+        .search-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            padding: 12px 12px 12px 42px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .orders-table th {
+            background: rgba(4, 33, 37, 0.8);
+            border-bottom: 2px solid var(--border-color);
+            padding: 16px 12px;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--accent);
+        }
+
+        .orders-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        .orders-table tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .order-items-cell {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .order-items-cell ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .order-items-cell li {
+            margin-bottom: 4px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.15);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-paid {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn-table-action {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn-lunas {
+            background: var(--success);
+            color: var(--primary);
+        }
+
+        .btn-lunas:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .empty-table-text {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ==========================================================================
+           FORM CONTROLS (CONFIGURATIONS)
+           ========================================================================== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .admin-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .admin-form-group label {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .admin-form-input,
+        .admin-form-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .admin-form-input:focus,
+        .admin-form-select:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .form-info-txt {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+            margin-top: 15px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Products Config Editor List */
+        .product-edit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .product-edit-row {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .product-edit-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-edit-info i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .product-edit-info span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .product-edit-input-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-edit-input-box span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .product-edit-input-box input {
+            width: 140px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            border-radius: 6px;
+            color: white;
+            outline: none;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .product-edit-input-box input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Toast Alert Notification styles */
+        .admin-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--primary);
+            color: var(--text-light);
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            z-index: 9999;
+            font-size: 0.9rem;
+            border: 1px solid var(--accent);
+            animation: slideUp 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none; /* Mobile navigation could be hidden or custom toggled */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+       1. LOGIN PASSCODE OVERLAY
+       ========================================================================== -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card">
+            <i class="fa-solid fa-user-shield" style="font-size: 3.5rem; color: var(--accent); margin-bottom: 20px; display: block;"></i>
+            <h2>GERBANG KEAMANAN ADMIN</h2>
+            <p>Masukkan kata sandi administrator untuk mengelola konfigurasi pre-order OspekUB.kit</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passcode" class="login-input" placeholder="Kata Sandi Administrator" required>
+                </div>
+                <button type="submit" class="btn-admin">Masuk ke Dashboard</button>
+            </form>
+            <div class="login-error" id="login-error">Kata sandi yang Anda masukkan salah!</div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       2. MAIN DASHBOARD CONTENT (HIDDEN BY DEFAULT)
+       ========================================================================== -->
+    <div class="admin-container" id="admin-dashboard-container" style="display: none;">
+        
+        <!-- Sidebar Menu Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                OspekUB<span>.admin</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" id="nav-item-summary">
+                    <button onclick="switchAdminTab('summary')">
+                        <i class="fa-solid fa-chart-line"></i> Ringkasan Utama
+                    </button>
+                </li>
+                <li class="nav-item" id="nav-item-orders">
+                    <button onclick="switchAdminTab('orders')">
+                        <i class="fa-solid fa-clipboard-list"></i> Daftar Pesanan Maba
+                    </button>
+                </li>
+                <li class="nav-item" id="nav-item-batch">
+                    <button onclick="switchAdminTab('batch')">
+                        <i class="fa-solid fa-clock"></i> Pengaturan Batch
+                    </button>
+                </li>
+                <li class="nav-item" id="nav-item-products">
+                    <button onclick="switchAdminTab('products')">
+                        <i class="fa-solid fa-tags"></i> Manajemen Produk
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar Sesi
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Viewport Panel -->
+        <main class="main-viewport">
+            
+            <!-- HEADER PANEL -->
+            <div class="header-panel">
+                <div class="header-title">
+                    <h1 id="panel-title-text">Ringkasan Utama</h1>
+                    <p id="panel-desc-text">Pantau data pemesanan perlengkapan OSPEK UB maba 2026 secara langsung.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="index.html" class="btn-action" target="_blank">
+                        <i class="fa-solid fa-store"></i> Buka Website Toko
+                    </a>
+                </div>
+            </div>
+
+            <!-- ==========================================================================
+               VIEW 1: SUMMARY / RINGKASAN
+               ========================================================================== -->
+            <div class="admin-view" id="view-summary" style="display: block;">
+                
+                <!-- Stat Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span>Total Pesanan Masuk</span>
+                            <h2 id="stat-total-orders">0</h2>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span>Akumulasi Pendapatan</span>
+                            <h2 id="stat-total-revenue">Rp 0</h2>
+                        </div>
+                        <div class="stat-icon" style="color: var(--success);">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span>Batch Berjalan</span>
+                            <h2 id="stat-batch-name">Batch 1</h2>
+                        </div>
+                        <div class="stat-icon" style="color: var(--warning);">
+                            <i class="fa-solid fa-fire"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span>Sisa Slot Kuota</span>
+                            <h2 id="stat-slots-left">0</h2>
+                        </div>
+                        <div class="stat-icon" style="color: var(--danger);">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Orders Grid -->
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Pesanan Terbaru Terdaftar</h3>
+                    <div class="table-responsive">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Maba</th>
+                                    <th>Fakultas</th>
+                                    <th>Total Bayar</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quick-orders-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==========================================================================
+               VIEW 2: ORDERS / DAFTAR PESANAN
+               ========================================================================== -->
+            <div class="admin-view" id="view-orders" style="display: none;">
+                
+                <div class="panel-card">
+                    <div class="search-row">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="order-search-input" class="search-input" placeholder="Cari berdasarkan Nama Mahasiswa atau NIM..." oninput="filterOrdersTable()">
+                        </div>
+                        <button class="btn-action" style="background-color: var(--danger); border-color: var(--danger);" onclick="clearAllOrders()">
+                            <i class="fa-solid fa-trash-arrow-up"></i> Hapus Semua Pesanan
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Data Diri Maba</th>
+                                    <th>Hubungi</th>
+                                    <th>Rincian Barang</th>
+                                    <th>Total Bayar</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="full-orders-tbody">
+                                <!-- Dynamic orders loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==========================================================================
+               VIEW 3: BATCH CONFIG / PENGATURAN COUNTDOWN & KUOTA
+               ========================================================================== -->
+            <div class="admin-view" id="view-batch" style="display: none;">
+                
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-clock"></i> Pengaturan Batch Urgency</h3>
+                    <form onsubmit="saveBatchSettings(event)">
+                        <div class="form-grid">
+                            <div class="admin-form-group">
+                                <label for="batch-title">Judul / Nama Batch</label>
+                                <input type="text" id="batch-title" class="admin-form-input" placeholder="Contoh: Batch 1: Kuota Terbatas!" required>
+                                <span class="form-info-txt">Akan muncul di banner bagian atas di sebelah ikon api.</span>
+                            </div>
+                            
+                            <div class="admin-form-group">
+                                <label for="batch-deadline">Batas Tanggal & Waktu (Countdown Target)</label>
+                                <input type="datetime-local" id="batch-deadline" class="admin-form-input" required>
+                                <span class="form-info-txt">Timer countdown akan menghitung mundur ke tanggal dan waktu ini.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="admin-form-group">
+                                <label for="batch-filled">Kuota Terisi saat ini</label>
+                                <input type="number" id="batch-filled" class="admin-form-input" min="0" required>
+                                <span class="form-info-txt">Mengubah nilai progress bar (misal: 255).</span>
+                            </div>
+                            
+                            <div class="admin-form-group">
+                                <label for="batch-total">Total Kapasitas Kuota</label>
+                                <input type="number" id="batch-total" class="admin-form-input" min="1" required>
+                                <span class="form-info-txt">Total pembagi slot kuota (misal: 300).</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-save"><i class="fa-solid fa-save"></i> Simpan Pengaturan Batch</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- ==========================================================================
+               VIEW 4: PRODUCTS CONFIG / MANAJEMEN HARGA BARANG
+               ========================================================================== -->
+            <div class="admin-view" id="view-products" style="display: none;">
+                
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-tags"></i> Pengaturan Harga & Diskon Barang</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px;">Silakan sesuaikan harga produk di bawah ini. Ketika disimpan, seluruh rincian harga di website pemesanan utama akan langsung diperbarui otomatis.</p>
+                    
+                    <form onsubmit="saveProductsSettings(event)">
+                        <!-- Packages pricing section -->
+                        <h4 style="color: var(--accent); margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">Pricelist Utama Paket</h4>
+                        <div class="form-grid" style="margin-bottom: 24px;">
+                            <div class="admin-form-group">
+                                <label for="price-kit-actual">Paket A (Kit) - Harga Setelah Diskon</label>
+                                <input type="number" id="price-kit-actual" class="admin-form-input" min="0" required>
+                            </div>
+                            <div class="admin-form-group">
+                                <label for="price-kit-orig">Paket A (Kit) - Harga Coret (Normal)</label>
+                                <input type="number" id="price-kit-orig" class="admin-form-input" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-bottom: 30px;">
+                            <div class="admin-form-group">
+                                <label for="price-clothing-actual">Paket B (Set Pakaian) - Harga Setelah Diskon</label>
+                                <input type="number" id="price-clothing-actual" class="admin-form-input" min="0" required>
+                            </div>
+                            <div class="admin-form-group">
+                                <label for="price-clothing-orig">Paket B (Set Pakaian) - Harga Coret (Normal)</label>
+                                <input type="number" id="price-clothing-orig" class="admin-form-input" min="0" required>
+                            </div>
+                        </div>
+
+                        <!-- Individual Single items pricing list -->
+                        <h4 style="color: var(--accent); margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">Harga Barang Satuan (Kategori A & B)</h4>
+                        <div class="product-edit-list" id="product-inputs-container">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+
+                        <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Simpan Daftar & Harga Barang</button>
+                    </form>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        // Default Config variables in case localStorage is empty
+        const defaultProductsConfig = {
+            kitActualPrice: 99000,
+            kitOriginalPrice: 125000,
+            clothingActualPrice: 189000,
+            clothingOriginalPrice: 245000,
+            singleItems: {
+                'cat-buku': 15000,
+                'cat-pulpen': 5000,
+                'cat-lanyard': 18000,
+                'cat-totebag': 25000,
+                'cat-topi': 20000,
+                'cat-tumbler': 35000,
+                'cat-pin': 7000,
+                'single-shirt': 55000,
+                'single-tie': 12000,
+                'single-pants': 75000,
+                'single-skirt': 65000,
+                'single-socks': 8000,
+                'single-pantofel-pria': 95000,
+                'single-pantofel-wanita': 85000
+            }
+        };
+
+        const defaultBatchConfig = {
+            batchName: "Batch 1: Kuota Terbatas!",
+            slotsFilled: 255,
+            totalSlots: 300,
+            deadlineDate: ""
+        };
+
+        // Product readable names mapping for DOM editing rows
+        const productNamesMap = {
+            'cat-buku': 'Buku Catatan Eksklusif UB',
+            'cat-pulpen': 'Pulpen Aksen Emas UB',
+            'cat-lanyard': 'Lanyard & ID Card Holder UB',
+            'cat-totebag': 'Tote Bag Kanvas Tebal UB',
+            'cat-topi': 'Topi Hitam UB Resmi',
+            'cat-tumbler': 'Tumbler Aluminium UB (Eco)',
+            'cat-pin': 'PIN Logam & Gantungan Kunci UB',
+            'single-shirt': 'Kemeja Putih Polos Panjang',
+            'single-tie': 'Dasi Hitam Formal Instan',
+            'single-pants': 'Celana Hitam Formal Pria',
+            'single-skirt': 'Rok Hitam Formal Wanita',
+            'single-socks': 'Kaos Kaki Putih Tebal',
+            'single-pantofel-pria': 'Sepatu Pantofel Pria',
+            'single-pantofel-wanita': 'Sepatu Pantofel Wanita'
+        };
+
+        // Check login session on load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('ub_admin_logged_in') === 'true') {
+                showDashboard();
+            }
+        });
+
+        // ==========================================================================
+        // 1. SECURITY & ACCESS CONTROL LOGIC
+        // ==========================================================================
+        function handleLogin(event) {
+            event.preventDefault();
+            const passcode = document.getElementById('passcode').value;
+            const errorEl = document.getElementById('login-error');
+            
+            // Password checked is 'adminub' or 'admin123'
+            if (passcode === 'adminub' || passcode === 'admin123') {
+                sessionStorage.setItem('ub_admin_logged_in', 'true');
+                errorEl.style.display = 'none';
+                
+                // Animate login fadeout
+                const overlay = document.getElementById('login-overlay');
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    showDashboard();
+                }, 500);
+            } else {
+                errorEl.style.display = 'block';
+                document.getElementById('passcode').value = '';
+                document.getElementById('passcode').focus();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('admin-dashboard-container').style.display = 'grid';
+            
+            // Load and render all components
+            loadOrdersData();
+            loadBatchConfigInputs();
+            loadProductsConfigInputs();
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('ub_admin_logged_in');
+            window.location.reload();
+        }
+
+        // ==========================================================================
+        // 2. DASHBOARD SWITCH NAVIGATION
+        // ==========================================================================
+        function switchAdminTab(tabId) {
+            // Remove active classes
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.admin-view').forEach(view => view.style.display = 'none');
+            
+            // Activate current
+            document.getElementById(`nav-item-${tabId}`).classList.add('active');
+            document.getElementById(`view-${tabId}`).style.display = 'block';
+            
+            // Headers texts updates
+            const titleText = document.getElementById('panel-title-text');
+            const descText = document.getElementById('panel-desc-text');
+            
+            if (tabId === 'summary') {
+                titleText.textContent = 'Ringkasan Utama';
+                descText.textContent = 'Pantau data pemesanan perlengkapan OSPEK UB maba 2026 secara langsung.';
+                loadOrdersData(); // Reload stats and quick orders
+            } else if (tabId === 'orders') {
+                titleText.textContent = 'Daftar Pesanan Mahasiswa';
+                descText.textContent = 'Kelola status pembayaran dan verifikasi bukti transfer maba.';
+                loadOrdersData(); // Reload table
+            } else if (tabId === 'batch') {
+                titleText.textContent = 'Pengaturan Batch PO';
+                descText.textContent = 'Ubah judul batch, batas countdown waktu, dan progress slots kuota.';
+                loadBatchConfigInputs();
+            } else if (tabId === 'products') {
+                titleText.textContent = 'Manajemen Produk & Harga';
+                descText.textContent = 'Sesuaikan harga coret paket, harga promo, dan harga barang satuan.';
+                loadProductsConfigInputs();
+            }
+        }
+
+        // ==========================================================================
+        // 3. STATS & ORDERS LOADER DATABASE
+        // ==========================================================================
+        let globalOrders = [];
+
+        async function loadOrdersData() {
+            // Load dari Supabase
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                globalOrders = data || [];
+                
+                // Format tanggal agar sesuai dengan tampilan lama
+                globalOrders = globalOrders.map(o => {
+                    return {
+                        ...o,
+                        date: new Date(o.created_at).toLocaleString('id-ID')
+                    }
+                });
+            } catch (err) {
+                console.error("Gagal mengambil data pesanan:", err);
+                globalOrders = [];
+                showAdminToast("Gagal memuat data dari database!");
+            }
+
+            // A. Update Dashboard Stats Cards
+            let totalRevenue = 0;
+            globalOrders.forEach(order => {
+                // Sum revenue only from confirmed/paid orders or all orders? Let's count LUNAS orders as actual revenue, but show total for all completed registrations
+                if (order.status === 'LUNAS (Terverifikasi)' || order.status.includes('LUNAS')) {
+                    totalRevenue += order.total;
+                }
+            });
+
+            document.getElementById('stat-total-orders').textContent = globalOrders.length;
+            document.getElementById('stat-total-revenue').textContent = formatRupiah(totalRevenue);
+            
+            // Load active batch name
+            let batchConfig = defaultBatchConfig;
+            if (localStorage.getItem('ub_batch_config')) {
+                batchConfig = JSON.parse(localStorage.getItem('ub_batch_config'));
+            }
+            document.getElementById('stat-batch-name').textContent = batchConfig.batchName.split(':')[0];
+            document.getElementById('stat-slots-left').textContent = batchConfig.totalSlots - batchConfig.slotsFilled;
+
+            // B. Populate Quick Orders Tbody
+            const quickBody = document.getElementById('quick-orders-tbody');
+            quickBody.innerHTML = '';
+            
+            if (globalOrders.length === 0) {
+                quickBody.innerHTML = '<tr><td colspan="6" class="empty-table-text">Belum ada pesanan terdaftar di sistem.</td></tr>';
+            } else {
+                const limitOrders = globalOrders.slice(0, 5); // Limit 5 on summary tab
+                limitOrders.forEach(order => {
+                    const tr = document.createElement('tr');
+                    const isLunas = order.status.includes('LUNAS');
+                    tr.innerHTML = `
+                        <td><strong>#${order.id}</strong></td>
+                        <td>${order.date.split(',')[0]}</td>
+                        <td>${order.name}</td>
+                        <td>${order.faculty.split('(')[1] ? order.faculty.split('(')[1].replace(')', '') : order.faculty}</td>
+                        <td><strong>${formatRupiah(order.total)}</strong></td>
+                        <td><span class="status-badge ${isLunas ? 'status-paid' : 'status-pending'}">${order.status}</span></td>
+                    `;
+                    quickBody.appendChild(tr);
+                });
+            }
+
+            // C. Populate Full Orders Tbody
+            renderFullOrdersTable(globalOrders);
+        }
+
+        function renderFullOrdersTable(ordersList) {
+            const fullBody = document.getElementById('full-orders-tbody');
+            fullBody.innerHTML = '';
+
+            if (ordersList.length === 0) {
+                fullBody.innerHTML = '<tr><td colspan="7" class="empty-table-text">Tidak ada data pesanan ditemukan.</td></tr>';
+                return;
+            }
+
+            ordersList.forEach(order => {
+                const tr = document.createElement('tr');
+                const isLunas = order.status.includes('LUNAS');
+                
+                // Item details rendering inside td
+                let itemsListHtml = '<ul>';
+                order.items.forEach(item => {
+                    itemsListHtml += `<li>• <strong>${item.name}</strong> x${item.quantity} (${item.size})</li>`;
+                });
+                itemsListHtml += '</ul>';
+
+                tr.innerHTML = `
+                    <td>
+                        <strong>#${order.id}</strong><br>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">${order.date}</span>
+                    </td>
+                    <td>
+                        <strong>${order.name}</strong><br>
+                        <span style="font-size: 0.76rem; color: var(--accent);">NIM: ${order.nim}</span><br>
+                        <span style="font-size: 0.76rem; color: var(--text-muted);">${order.faculty} - ${order.department}</span>
+                    </td>
+                    <td>
+                        <a href="https://wa.me/${order.whatsapp.replace(/^0/, '62')}" target="_blank" style="color: #2ecc71; text-decoration: none; font-weight:600; display:flex; align-items:center; gap:4px;">
+                            <i class="fa-brands fa-whatsapp" style="font-size:1rem;"></i> ${order.whatsapp}
+                        </a>
+                    </td>
+                    <td class="order-items-cell">${itemsListHtml}</td>
+                    <td>
+                        <strong style="font-size: 0.95rem; color: var(--accent);">${formatRupiah(order.total)}</strong>
+                    </td>
+                    <td>
+                        <span class="status-badge ${isLunas ? 'status-paid' : 'status-pending'}">${order.status}</span>
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            ${!isLunas ? `
+                                <button class="btn-table-action btn-lunas" onclick="markOrderAsPaid('${order.id}')">
+                                    <i class="fa-solid fa-check"></i> Tandai Lunas
+                                </button>
+                            ` : ''}
+                            <button class="btn-table-action btn-delete" onclick="deleteOrder('${order.id}')">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
+                            </button>
+                        </div>
+                    </td>
+                `;
+                fullBody.appendChild(tr);
+            });
+        }
+
+        // Search filtering logic
+        function filterOrdersTable() {
+            const query = document.getElementById('order-search-input').value.toLowerCase();
+            const filtered = globalOrders.filter(order => 
+                order.name.toLowerCase().includes(query) || 
+                order.nim.toLowerCase().includes(query) || 
+                order.id.toLowerCase().includes(query)
+            );
+            renderFullOrdersTable(filtered);
+        }
+
+        // Mark single order as Paid
+        async function markOrderAsPaid(orderId) {
+            if (confirm(`Konfirmasi pembayaran lunas untuk Order #${orderId}? Invoice akan otomatis dikirim ke email mahasiswa.`)) {
+                try {
+                    // 1. Update status di Supabase
+                    const { error } = await supabase
+                        .from('orders')
+                        .update({ status: 'LUNAS (Terverifikasi)' })
+                        .eq('id', orderId);
+                    
+                    if (error) throw error;
+
+                    // 2. Panggil Vercel API untuk kirim email Resend
+                    try {
+                        const response = await fetch('/api/send-invoice', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ orderId: orderId })
+                        });
+                        
+                        if (!response.ok) {
+                            console.error('Email API response:', await response.text());
+                            showAdminToast('Pesanan lunas, tapi gagal mengirim email otomatis.');
+                        } else {
+                            showAdminToast('Pesanan Lunas & Invoice Email berhasil terkirim!');
+                        }
+                    } catch (apiErr) {
+                        console.error('Failed to trigger email:', apiErr);
+                        showAdminToast('Pesanan Lunas, tapi API Email tidak dapat dihubungi.');
+                    }
+                    
+                    loadOrdersData();
+                } catch (err) {
+                    alert('Gagal mengupdate pesanan: ' + err.message);
+                }
+            }
+        }
+
+        // Delete single order record
+        async function deleteOrder(orderId) {
+            if (confirm(`Apakah Anda yakin ingin menghapus data pesanan #${orderId} secara permanen? Tindakan ini tidak dapat dibatalkan.`)) {
+                try {
+                    const { error } = await supabase
+                        .from('orders')
+                        .delete()
+                        .eq('id', orderId);
+                    
+                    if (error) throw error;
+
+                    showAdminToast('Catatan pesanan berhasil dihapus!');
+                    loadOrdersData();
+                } catch (err) {
+                    alert('Gagal menghapus pesanan: ' + err.message);
+                }
+            }
+        }
+
+        // Clear all order records
+        async function clearAllOrders() {
+            if (confirm('PERINGATAN KERAS! Apakah Anda yakin ingin mengosongkan seluruh database pesanan di browser ini? Tindakan ini akan menghapus SEMUA pesanan.')) {
+                try {
+                    // Karena RLS atau untuk safety, delete all biasanya diblock, tapi asumsikan kita punya akses
+                    const { error } = await supabase
+                        .from('orders')
+                        .delete()
+                        .neq('id', '0'); // trik hapus semua
+                    
+                    if (error) throw error;
+                    
+                    showAdminToast('Seluruh data pesanan berhasil dibersihkan!');
+                    loadOrdersData();
+                } catch (err) {
+                    alert('Gagal mengosongkan pesanan: ' + err.message);
+                }
+            }
+        }
+
+        // ==========================================================================
+        // 4. BATCH CONFIG WRITER LOGIC
+        // ==========================================================================
+        function loadBatchConfigInputs() {
+            let batchConfig = defaultBatchConfig;
+            if (localStorage.getItem('ub_batch_config')) {
+                batchConfig = JSON.parse(localStorage.getItem('ub_batch_config'));
+            }
+
+            document.getElementById('batch-title').value = batchConfig.batchName;
+            document.getElementById('batch-filled').value = batchConfig.slotsFilled;
+            document.getElementById('batch-total').value = batchConfig.totalSlots;
+
+            // Date picker formatting (datetime-local expects YYYY-MM-DDTHH:MM)
+            if (batchConfig.deadlineDate) {
+                const dateObj = new Date(batchConfig.deadlineDate);
+                // Adjust timezone offset to get correct ISO representation without converting to UTC
+                const tzOffset = dateObj.getTimezoneOffset() * 60000; 
+                const localISOTime = (new Date(dateObj.getTime() - tzOffset)).toISOString().slice(0, 16);
+                document.getElementById('batch-deadline').value = localISOTime;
+            }
+        }
+
+        function saveBatchSettings(event) {
+            event.preventDefault();
+            
+            const batchName = document.getElementById('batch-title').value;
+            const slotsFilled = parseInt(document.getElementById('batch-filled').value);
+            const totalSlots = parseInt(document.getElementById('batch-total').value);
+            const deadlineVal = document.getElementById('batch-deadline').value;
+
+            if (slotsFilled > totalSlots) {
+                alert('Peringatan: Jumlah slot terisi tidak boleh melebihi total kapasitas kuota!');
+                return;
+            }
+
+            const updatedBatch = {
+                batchName,
+                slotsFilled,
+                totalSlots,
+                deadlineDate: new Date(deadlineVal).toISOString()
+            };
+
+            localStorage.setItem('ub_batch_config', JSON.stringify(updatedBatch));
+            showAdminToast('Pengaturan Batch pre-order berhasil disimpan!');
+        }
+
+        // ==========================================================================
+        // 5. PRODUCTS & PRICES MANAGER LOGIC
+        // ==========================================================================
+        function loadProductsConfigInputs() {
+            let config = defaultProductsConfig;
+            if (localStorage.getItem('ub_products_config')) {
+                config = JSON.parse(localStorage.getItem('ub_products_config'));
+            }
+
+            // Populate packages prices inputs
+            document.getElementById('price-kit-actual').value = config.kitActualPrice;
+            document.getElementById('price-kit-orig').value = config.kitOriginalPrice;
+            document.getElementById('price-clothing-actual').value = config.clothingActualPrice;
+            document.getElementById('price-clothing-orig').value = config.clothingOriginalPrice;
+
+            // Populate single items input container list dynamically
+            const container = document.getElementById('product-inputs-container');
+            container.innerHTML = '';
+
+            Object.keys(config.singleItems).forEach(id => {
+                const price = config.singleItems[id];
+                const name = productNamesMap[id] || id;
+                
+                // Icon representation based on category or item type
+                let iconClass = 'fa-solid fa-circle-notch';
+                if (id.includes('buku') || id.includes('pulpen')) iconClass = 'fa-solid fa-pen-fancy';
+                else if (id.includes('lanyard') || id.includes('pin')) iconClass = 'fa-solid fa-id-badge';
+                else if (id.includes('totebag') || id.includes('tumbler')) iconClass = 'fa-solid fa-bag-shopping';
+                else if (id.includes('shirt') || id.includes('pants') || id.includes('skirt') || id.includes('socks')) iconClass = 'fa-solid fa-shirt';
+                else if (id.includes('pantofel')) iconClass = 'fa-solid fa-shoe-prints';
+
+                const row = document.createElement('div');
+                row.className = 'product-edit-row';
+                row.innerHTML = `
+                    <div class="product-edit-info">
+                        <i class="${iconClass}"></i>
+                        <span>${name}</span>
+                    </div>
+                    <div class="product-edit-input-box">
+                        <span>Rp</span>
+                        <input type="number" class="single-item-price-input" data-id="${id}" value="${price}" min="0" required>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function saveProductsSettings(event) {
+            event.preventDefault();
+
+            // Retrieve updated packages pricing inputs
+            const kitActualPrice = parseInt(document.getElementById('price-kit-actual').value);
+            const kitOriginalPrice = parseInt(document.getElementById('price-kit-orig').value);
+            const clothingActualPrice = parseInt(document.getElementById('price-clothing-actual').value);
+            const clothingOriginalPrice = parseInt(document.getElementById('price-clothing-orig').value);
+
+            // Retrieve updated single items prices from DOM inputs
+            const singleItems = {};
+            document.querySelectorAll('.single-item-price-input').forEach(input => {
+                const id = input.getAttribute('data-id');
+                const price = parseInt(input.value);
+                singleItems[id] = price;
+            });
+
+            const updatedProductsConfig = {
+                kitActualPrice,
+                kitOriginalPrice,
+                clothingActualPrice,
+                clothingOriginalPrice,
+                singleItems
+            };
+
+            localStorage.setItem('ub_products_config', JSON.stringify(updatedProductsConfig));
+            showAdminToast('Daftar & Harga Barang berhasil diperbarui!');
+        }
+
+        // ==========================================================================
+        // UTILITY FUNCTIONS
+        // ==========================================================================
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number);
+        }
+
+        function showAdminToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'admin-toast';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--success); font-size:1.25rem;"></i> <span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease-out';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+    </script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
+        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
+        const supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+    </script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Order Perlengkapan OSPEK UB 2026 | Praktis & Premium</title>
+    
+    <!-- Meta SEO -->
+    <meta name="description" content="Website pemesanan pre-order resmi perlengkapan dan pakaian formal OSPEK Universitas Brawijaya 2026. Beli per paket hemat atau satuan dengan pembayaran QRIS instan.">
+    <meta name="keywords" content="Ospek UB, Universitas Brawijaya, perlengkapan ospek, kemeja putih, pantofel, dasi hitam, baju ospek, maba UB">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ==========================================================================
+       HEADER & NAVBAR
+       ========================================================================== -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo" id="logo-nav">
+                    <i class="fa-solid fa-graduation-cap logo-icon"></i>
+                    <h2>OspekUB<span>.kit</span></h2>
+                </a>
+                
+                <ul class="nav-menu">
+                    <li><a href="#hero" class="nav-link">Beranda</a></li>
+                    <li><a href="#produk" class="nav-link">Pilihan Produk</a></li>
+                    <li><a href="#checkout" class="nav-link">Formulir Pesanan</a></li>
+                </ul>
+                
+                <div class="nav-cart-trigger" id="cart-trigger">
+                    <i class="fa-solid fa-shopping-basket"></i>
+                    <span>Keranjang</span>
+                    <span class="cart-count" id="global-cart-count">0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <span class="badge badge-accent" style="margin-bottom: 16px;">Selamat Datang Maba UB 2026!</span>
+                    <h1>Persiapkan OSPEK UB Kamu dengan <span>Praktis & Premium</span></h1>
+                    <p>Selamat atas kelulusanmu di Universitas Brawijaya! Jangan pusing memikirkan atribut dan seragam OSPEK. Kami menyediakan paket lengkap dan pembelian satuan atribut resmi UB kualitas premium dengan pemesanan pre-order yang mudah.</p>
+                    <div class="hero-actions">
+                        <a href="#produk" class="btn btn-primary"><i class="fa-solid fa-shopping-bag"></i> Pesan Sekarang</a>
+                        <a href="#produk" class="btn btn-outline" id="btn-learn-more"><i class="fa-solid fa-info-circle"></i> Lihat Satuan</a>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <!-- Premium Generated Hero Visual -->
+                    <img src="assets/hero_merch.png" alt="Perlengkapan Premium OSPEK UB" class="hero-image" id="hero-img-element">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       URGENCY & BATCH CARD
+       ========================================================================== -->
+    <section class="urgency-section">
+        <div class="container">
+            <div class="urgency-card">
+                <div class="batch-info">
+                    <span class="badge badge-secondary"><i class="fa-solid fa-clock"></i> Pre-Order Sedang Berjalan</span>
+                    <h3 style="margin-top: 10px;"><i class="fa-solid fa-fire" style="color: #e74c3c;"></i> Batch 1: Kuota Terbatas!</h3>
+                    <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 8px;">Pemesanan Batch 1 mendapatkan diskon paket hingga 20% dan jaminan ukuran pakaian pas. Slot ditutup jika kuota terpenuhi.</p>
+                    
+                    <div class="batch-status-bar">
+                        <div class="batch-progress" id="progress-bar"></div>
+                    </div>
+                    <div class="batch-slots-text">
+                        <span>Sudah Terisi: <strong id="slots-filled">255</strong> / 300 Slot</span>
+                        <span style="color: #e74c3c; font-weight: 600;"><i class="fa-solid fa-user-clock"></i> Sisa <span id="slots-left">45</span> Slot Lagi!</span>
+                    </div>
+                </div>
+                
+                <div class="countdown-wrapper">
+                    <span class="countdown-title">Batas Waktu Pemesanan Batch 1</span>
+                    <div class="countdown-timer">
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="days">02</span>
+                            <span class="countdown-label">Hari</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="hours">14</span>
+                            <span class="countdown-label">Jam</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="minutes">45</span>
+                            <span class="countdown-label">Menit</span>
+                        </div>
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="seconds">30</span>
+                            <span class="countdown-label">Detik</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       PRODUCTS & CUSTOMIZATION SECTION
+       ========================================================================== -->
+    <section class="products-section section-padding" id="produk">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Pilih Perlengkapan OSPEK</h2>
+                <p>Kami mempermudah pemesanan atribut OSPEK Universitas Brawijaya. Kamu bisa memilih paket hemat lengkap langsung jadi, atau membeli satuan sesuai atribut yang belum kamu miliki.</p>
+            </div>
+            
+            <!-- Tab Switcher -->
+            <div class="tab-container">
+                <button class="tab-btn active" id="tab-packages-btn" onclick="switchTab('packages')">
+                    <i class="fa-solid fa-box-open"></i> Pesen Per Paket
+                    <span class="tab-badge">Hemat s.d 20%</span>
+                </button>
+                <button class="tab-btn" id="tab-items-btn" onclick="switchTab('items')">
+                    <i class="fa-solid fa-list-check"></i> Beli Satuan (Kustom)
+                    <span class="tab-badge">Sesuai Kebutuhan</span>
+                </button>
+            </div>
+
+            <!-- Content A: Paket (Packages Grid) -->
+            <div class="packages-grid active-tab" id="tab-packages-content">
+                
+                <!-- Package A: OSPEK 1 Kit (Perlengkapan) -->
+                <div class="package-card highlighted" id="pack-kit-card">
+                    <span class="package-badge"><i class="fa-solid fa-star"></i> Paling Populer</span>
+                    <div class="package-img-wrapper">
+                        <img src="assets/hero_merch.png" alt="UB Ospek 1 Kit Atribut Resmi">
+                    </div>
+                    <div class="package-card-body">
+                        <h3 class="package-title">Paket A: UB Ospek 1 Kit Atribut</h3>
+                        <p class="package-desc">Satu kit lengkap atribut wajib dan merchandise penunjang resmi Universitas Brawijaya untuk kelengkapan administrasi dan kegiatan OSPEK (Raja Brawijaya).</p>
+                        
+                        <div class="package-includes">
+                            <h4>Isi Paket (Dapat Semua):</h4>
+                            <div class="include-list">
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Buku Catatan Eksklusif UB 2026 (Wajib)</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Pulpen UB Aksen Emas</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Premium Lanyard & ID Card Holder UB</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Tote Bag Kanvas UB Kualitas Tebal</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Topi UB untuk outdoor</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Tumbler Aluminium UB (Ramah Lingkungan)</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> PIN Logam & Gantungan Kunci UB</div>
+                            </div>
+                        </div>
+
+                        <!-- Config group for Package A (Standard size/no specific sizes) -->
+                        <div class="package-config-group">
+                            <span class="package-config-title"><i class="fa-solid fa-circle-info"></i> Informasi Paket</span>
+                            <p style="font-size: 0.82rem; color: var(--text-muted);">Seluruh merchandise berlogo Universitas Brawijaya resmi dan dibuat dari bahan ramah lingkungan yang awet.</p>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="price-box">
+                                <span class="original-price">Rp 125.000</span>
+                                <span class="actual-price">Rp 99.000</span>
+                            </div>
+                            <button class="btn btn-secondary" onclick="addPackageToCart('kit')"><i class="fa-solid fa-cart-plus"></i> Ambil Paket A</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package B: 1 Set Pakaian Ospek -->
+                <div class="package-card" id="pack-clothing-card">
+                    <div class="package-img-wrapper">
+                        <img src="assets/formal_uniforms.png" alt="1 Set Pakaian Formal Ospek UB">
+                    </div>
+                    <div class="package-card-body">
+                        <h3 class="package-title">Paket B: 1 Set Pakaian Formal</h3>
+                        <p class="package-desc">Set lengkap pakaian formal standar OSPEK UB (kemeja, rok/celana, dasi, kaos kaki, pantofel) yang dijamin memenuhi kriteria peraturan tanpa takut salah beli.</p>
+                        
+                        <div class="package-includes">
+                            <h4>Isi Paket (Dapat Semua):</h4>
+                            <div class="include-list">
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kemeja Putih Polos Lengan Panjang (Katun Premium)</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Dasi Hitam Formal Instan (Rapih Instan)</div>
+                                <div class="include-item" id="include-bottoms"><i class="fa-solid fa-circle-check"></i> Celana / Rok Panjang Hitam Bahan Kerja</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kaos Kaki Putih Tebal di atas mata kaki (2 Pasang)</div>
+                                <div class="include-item" id="include-shoes"><i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Hitam (Nyaman dipakai seharian)</div>
+                            </div>
+                        </div>
+
+                        <!-- Configuration Group for clothing sizes -->
+                        <div class="package-config-group">
+                            <span class="package-config-title"><i class="fa-solid fa-sliders"></i> Sesuaikan Ukuran & Gender</span>
+                            <div class="gender-selectors">
+                                <button class="gender-btn active" id="gender-pria-btn" onclick="setPackageGender('pria')"><i class="fa-solid fa-mars"></i> Set Pria</button>
+                                <button class="gender-btn" id="gender-wanita-btn" onclick="setPackageGender('wanita')"><i class="fa-solid fa-venus"></i> Set Wanita</button>
+                            </div>
+                            
+                            <div class="size-grid">
+                                <div class="select-wrapper">
+                                    <label for="pack-shirt-size">Kemeja</label>
+                                    <select class="custom-select" id="pack-shirt-size">
+                                        <option value="S">Ukuran S</option>
+                                        <option value="M" selected>Ukuran M</option>
+                                        <option value="L">Ukuran L</option>
+                                        <option value="XL">Ukuran XL</option>
+                                        <option value="XXL">Ukuran XXL (+Rp 5.000)</option>
+                                    </select>
+                                </div>
+                                <div class="select-wrapper">
+                                    <label for="pack-bottoms-size" id="label-bottoms-size">Celana Hitam</label>
+                                    <select class="custom-select" id="pack-bottoms-size">
+                                        <option value="S">Ukuran S</option>
+                                        <option value="M" selected>Ukuran M</option>
+                                        <option value="L">Ukuran L</option>
+                                        <option value="XL">Ukuran XL</option>
+                                        <option value="XXL">Ukuran XXL (+Rp 5.000)</option>
+                                    </select>
+                                </div>
+                                <div class="select-wrapper" style="grid-column: span 2; margin-top: 6px;">
+                                    <label for="pack-shoes-size">Ukuran Sepatu Pantofel</label>
+                                    <select class="custom-select" id="pack-shoes-size">
+                                        <option value="36">Size 36 (Wanita)</option>
+                                        <option value="37">Size 37 (Wanita)</option>
+                                        <option value="38">Size 38 (Pria/Wanita)</option>
+                                        <option value="39">Size 39 (Pria/Wanita)</option>
+                                        <option value="40" selected>Size 40 (Pria/Wanita)</option>
+                                        <option value="41">Size 41 (Pria)</option>
+                                        <option value="42">Size 42 (Pria)</option>
+                                        <option value="43">Size 43 (Pria)</option>
+                                        <option value="44">Size 44 (Pria)</option>
+                                        <option value="45">Size 45 (Pria)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="price-box">
+                                <span class="original-price">Rp 245.000</span>
+                                <span class="actual-price" id="pack-clothing-price">Rp 189.000</span>
+                            </div>
+                            <button class="btn btn-secondary" onclick="addPackageToCart('clothing')"><i class="fa-solid fa-cart-plus"></i> Ambil Paket B</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Content B: Pembelian Satuan (Custom Builder Grid) -->
+            <div class="items-tab-content" id="tab-items-content">
+                <div class="custom-customizer-container">
+                    
+                    <!-- Left: Categories and Items List -->
+                    <div class="categories-container">
+                        
+                        <!-- Category 1: Kit Atribut -->
+                        <div class="category-block">
+                            <h3><i class="fa-solid fa-tags"></i> Kategori A: Atribut & Merchandise UB</h3>
+                            <div class="items-grid" id="category-merch-grid">
+                                <!-- Items will be dynamically loaded/managed or directly rendered in HTML -->
+                                
+                                <div class="item-card" data-id="cat-buku">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
+                                        <div class="item-info">
+                                            <h4>Buku Catatan Eksklusif UB</h4>
+                                            <span class="item-price">Rp 15.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-buku', 'Buku Catatan Eksklusif UB', 15000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-pulpen">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-pen-nib"></i></div>
+                                        <div class="item-info">
+                                            <h4>Pulpen Aksen Emas UB</h4>
+                                            <span class="item-price">Rp 5.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-pulpen', 'Pulpen Aksen Emas UB', 5000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-lanyard">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-id-badge"></i></div>
+                                        <div class="item-info">
+                                            <h4>Lanyard & ID Card Holder UB</h4>
+                                            <span class="item-price">Rp 18.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-lanyard', 'Lanyard & ID Card Holder UB', 18000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-totebag">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
+                                        <div class="item-info">
+                                            <h4>Tote Bag Kanvas Tebal UB</h4>
+                                            <span class="item-price">Rp 25.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-totebag', 'Tote Bag Kanvas Tebal UB', 25000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-topi">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-hat-cowboy"></i></div>
+                                        <div class="item-info">
+                                            <h4>Topi Hitam UB Resmi</h4>
+                                            <span class="item-price">Rp 20.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-topi', 'Topi Hitam UB Resmi', 20000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-tumbler">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-bottle-water"></i></div>
+                                        <div class="item-info">
+                                            <h4>Tumbler Aluminium UB (Eco)</h4>
+                                            <span class="item-price">Rp 35.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-tumbler', 'Tumbler Aluminium UB (Eco)', 35000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="cat-pin">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-certificate"></i></div>
+                                        <div class="item-info">
+                                            <h4>PIN Logam & Gantungan Kunci UB</h4>
+                                            <span class="item-price">Rp 7.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-pin', 'PIN Logam & Gantungan Kunci UB', 7000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Category 2: Pakaian Formal -->
+                        <div class="category-block">
+                            <h3><i class="fa-solid fa-shirt"></i> Kategori B: Pakaian Formal & Sepatu</h3>
+                            <div class="items-grid" id="category-clothing-grid">
+                                
+                                <div class="item-card" data-id="single-shirt">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-shirt"></i></div>
+                                        <div class="item-info">
+                                            <h4>Kemeja Putih Polos Panjang</h4>
+                                            <span class="item-price">Rp 55.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <select class="item-size-select" id="size-single-shirt">
+                                            <option value="S">S</option>
+                                            <option value="M" selected>M</option>
+                                            <option value="L">L</option>
+                                            <option value="XL">XL</option>
+                                            <option value="XXL">XXL (+Rp 5rb)</option>
+                                        </select>
+                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-shirt', 'Kemeja Putih Polos Panjang', 55000, 'size-single-shirt')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-tie">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-user-tie"></i></div>
+                                        <div class="item-info">
+                                            <h4>Dasi Hitam Formal Instan</h4>
+                                            <span class="item-price">Rp 12.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('single-tie', 'Dasi Hitam Formal Instan', 12000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-pants">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-person-half-dress"></i></div>
+                                        <div class="item-info">
+                                            <h4>Celana Hitam Formal Pria</h4>
+                                            <span class="item-price">Rp 75.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <select class="item-size-select" id="size-single-pants">
+                                            <option value="S">S</option>
+                                            <option value="M" selected>M</option>
+                                            <option value="L">L</option>
+                                            <option value="XL">XL</option>
+                                            <option value="XXL">XXL (+Rp 5rb)</option>
+                                        </select>
+                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pants', 'Celana Hitam Formal Pria', 75000, 'size-single-pants')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-skirt">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-person-dress"></i></div>
+                                        <div class="item-info">
+                                            <h4>Rok Hitam Formal Wanita</h4>
+                                            <span class="item-price">Rp 65.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <select class="item-size-select" id="size-single-skirt">
+                                            <option value="S">S</option>
+                                            <option value="M" selected>M</option>
+                                            <option value="L">L</option>
+                                            <option value="XL">XL</option>
+                                            <option value="XXL">XXL (+Rp 5rb)</option>
+                                        </select>
+                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-skirt', 'Rok Hitam Formal Wanita', 65000, 'size-single-skirt')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-socks">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-socks"></i></div>
+                                        <div class="item-info">
+                                            <h4>Kaos Kaki Putih Tebal (2 pasang)</h4>
+                                            <span class="item-price">Rp 8.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <button class="add-single-item-btn" onclick="addSingleToCart('single-socks', 'Kaos Kaki Putih Tebal', 8000, '-')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-pantofel-pria">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-shoe-prints"></i></div>
+                                        <div class="item-info">
+                                            <h4>Sepatu Pantofel Pria</h4>
+                                            <span class="item-price">Rp 95.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <select class="item-size-select" id="size-single-pantofel-pria">
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40" selected>40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                            <option value="45">45</option>
+                                        </select>
+                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pantofel-pria', 'Sepatu Pantofel Pria', 95000, 'size-single-pantofel-pria')">Tambah</button>
+                                    </div>
+                                </div>
+
+                                <div class="item-card" data-id="single-pantofel-wanita">
+                                    <div class="item-card-left">
+                                        <div class="item-icon-box"><i class="fa-solid fa-shoe-prints" style="transform: rotate(-30deg);"></i></div>
+                                        <div class="item-info">
+                                            <h4>Sepatu Pantofel Wanita</h4>
+                                            <span class="item-price">Rp 85.000</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-card-right">
+                                        <select class="item-size-select" id="size-single-pantofel-wanita">
+                                            <option value="36">36</option>
+                                            <option value="37" selected>37</option>
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40">40</option>
+                                        </select>
+                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pantofel-wanita', 'Sepatu Pantofel Wanita', 85000, 'size-single-pantofel-wanita')">Tambah</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Widget Customizer Summary -->
+                    <div class="customizer-summary-card">
+                        <div class="summary-header">
+                            <h3><i class="fa-solid fa-clipboard-list"></i> Kustomisasi Belanja</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Pilih item satuan di kiri untuk dimasukkan ke kustomisasi pesananmu.</p>
+                        </div>
+                        
+                        <div class="summary-items-list" id="custom-summary-list">
+                            <!-- Dynamically loaded item rows -->
+                            <div class="empty-summary-text" id="summary-empty-text">
+                                <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: var(--border-color); margin-bottom: 8px; display: block;"></i>
+                                Keranjang kustomisasi masih kosong.
+                            </div>
+                        </div>
+
+                        <div class="summary-totals">
+                            <div class="total-row">
+                                <span>Subtotal</span>
+                                <span id="custom-subtotal">Rp 0</span>
+                            </div>
+                            <div class="total-row" style="color: #2ecc71;">
+                                <span>Potongan Harga</span>
+                                <span id="custom-discount">Rp 0</span>
+                            </div>
+                            <div class="total-row grand-total">
+                                <span>Total</span>
+                                <span id="custom-grand-total">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <a href="#checkout" class="btn btn-primary btn-full-width" id="btn-custom-checkout" onclick="closeCartDrawer()"><i class="fa-solid fa-file-invoice-dollar"></i> Isi Data Checkout</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       SLIDING CART DRAWER (SIDEBAR)
+       ========================================================================== -->
+    <div class="cart-overlay" id="cart-overlay" onclick="closeCartDrawer()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3><i class="fa-solid fa-shopping-basket"></i> Keranjang Kamu</h3>
+            <button class="cart-close-btn" onclick="closeCartDrawer()">&times;</button>
+        </div>
+        
+        <div class="cart-body" id="cart-drawer-body">
+            <!-- Dynamically Loaded Items Container -->
+            <div id="cart-items-container"></div>
+            
+            <!-- Dynamically Loaded Items -->
+            <div class="cart-empty-state" id="cart-empty-state">
+                <i class="fa-solid fa-shopping-bag"></i>
+                <p>Keranjang belanja kamu masih kosong.<br>Silakan tambahkan paket atau item satuan.</p>
+            </div>
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-totals">
+                <div class="total-row">
+                    <span>Subtotal Barang</span>
+                    <span id="cart-subtotal">Rp 0</span>
+                </div>
+                <div class="total-row" style="color: #2ecc71;">
+                    <span>Diskon Paket</span>
+                    <span id="cart-discount">Rp 0</span>
+                </div>
+                <div class="total-row grand-total" style="font-size: 1.15rem;">
+                    <span>Total Pembayaran</span>
+                    <span id="cart-grand-total">Rp 0</span>
+                </div>
+            </div>
+            <a href="#checkout" class="btn btn-primary btn-full-width" id="cart-checkout-btn" onclick="closeCartDrawer()"><i class="fa-solid fa-cash-register"></i> Lanjut Ke Form Checkout</a>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       CHECKOUT FORM & PAYMENT SECTION
+       ========================================================================== -->
+    <section class="checkout-section section-padding" id="checkout">
+        <div class="container">
+            <div class="checkout-grid">
+                
+                <!-- Left Column: Checkout Personal Information -->
+                <div class="checkout-form-card">
+                    <h3><i class="fa-solid fa-user-pen"></i> Isi Data Diri Mahasiswa</h3>
+                    
+                    <form id="checkout-form" onsubmit="triggerCheckout(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="full-name">Nama Lengkap</label>
+                            <input type="text" class="form-input" id="full-name" placeholder="Masukkan nama sesuai KTP / SNMPTN" required>
+                        </div>
+                        
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label class="form-label" for="nim-number">NIM / Nomor Peserta</label>
+                                <input type="text" class="form-input" id="nim-number" placeholder="Contoh: 265150200111001" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="whatsapp-number">Nomor WhatsApp Aktif</label>
+                                <input type="tel" class="form-input" id="whatsapp-number" placeholder="Contoh: 081234567890" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email-address">Alamat Email Aktif (Untuk Pengiriman Invoice)</label>
+                            <input type="email" class="form-input" id="email-address" placeholder="Contoh: maba@student.ub.ac.id" required>
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label class="form-label" for="student-faculty">Fakultas</label>
+                                <select class="form-select" id="student-faculty" required>
+                                    <option value="" disabled selected>-- Pilih Fakultas --</option>
+                                    <option value="Fakultas Ilmu Komputer (FILKOM)">Fakultas Ilmu Komputer (FILKOM)</option>
+                                    <option value="Fakultas Teknik (FT)">Fakultas Teknik (FT)</option>
+                                    <option value="Fakultas Hukum (FH)">Fakultas Hukum (FH)</option>
+                                    <option value="Fakultas Ekonomi & Bisnis (FEB)">Fakultas Ekonomi & Bisnis (FEB)</option>
+                                    <option value="Fakultas Ilmu Sosial & Ilmu Politik (FISIP)">Fakultas Ilmu Sosial & Ilmu Politik (FISIP)</option>
+                                    <option value="Fakultas Kedokteran (FK)">Fakultas Kedokteran (FK)</option>
+                                    <option value="Fakultas Pertanian (FP)">Fakultas Pertanian (FP)</option>
+                                    <option value="Fakultas Peternakan (Fapet)">Fakultas Peternakan (Fapet)</option>
+                                    <option value="Fakultas MIPA (FMIPA)">Fakultas MIPA (FMIPA)</option>
+                                    <option value="Fakultas Perikanan & Ilmu Kelautan (FPIK)">Fakultas Perikanan & Ilmu Kelautan (FPIK)</option>
+                                    <option value="Lainnya">Lainnya / Vokasi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="student-department">Jurusan / Program Studi</label>
+                                <input type="text" class="form-input" id="student-department" placeholder="Contoh: Teknik Informatika" required>
+                            </div>
+                        </div>
+                        
+                        <div class="checkout-terms">
+                            <input type="checkbox" id="agree-terms" required>
+                            <label for="agree-terms">Saya menyetujui bahwa pesanan pre-order ini tidak dapat dibatalkan secara sepihak dan ukuran pakaian/sepatu yang saya pilih sudah benar sesuai tabel panduan.</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-full-width" style="margin-top: 30px; font-size: 1.1rem; padding: 16px;"><i class="fa-solid fa-qrcode"></i> Bayar Sekarang (Simulasi QRIS)</button>
+                    </form>
+                </div>
+
+                <!-- Right Column: Cart Overview Sticky widget -->
+                <div class="customizer-summary-card" style="top: 110px;">
+                    <div class="summary-header">
+                        <h3><i class="fa-solid fa-shopping-bag"></i> Rincian Akhir</h3>
+                    </div>
+                    
+                    <div class="summary-items-list" id="checkout-summary-list" style="max-height: 350px;">
+                        <!-- Automatically Syncs with Global Cart -->
+                    </div>
+
+                    <div class="summary-totals">
+                        <div class="total-row">
+                            <span>Subtotal Belanja</span>
+                            <span id="final-subtotal">Rp 0</span>
+                        </div>
+                        <div class="total-row" style="color: #2ecc71;">
+                            <span>Diskon Hemat</span>
+                            <span id="final-discount">Rp 0</span>
+                        </div>
+                        <div class="total-row grand-total" style="font-size: 1.4rem;">
+                            <span>Total Tagihan</span>
+                            <span id="final-grand-total">Rp 0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="package-config-group" style="background-color: var(--accent-light); border-color: rgba(212, 175, 55, 0.3);">
+                        <span class="package-config-title" style="color: #b08d1a;"><i class="fa-solid fa-shield-halved"></i> Garansi & Layanan</span>
+                        <p style="font-size: 0.8rem; color: #8e6f10; line-height: 1.4; margin-top: 4px;">Pemesanan pre-order ini diproses 7-14 hari kerja. Kami melayani penukaran ukuran pakaian jika kekecilan/kebesaran gratis di area kampus Universitas Brawijaya.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       QRIS SIMULATOR MODAL DIALOG
+       ========================================================================== -->
+    <div class="modal-overlay" id="qris-modal-overlay">
+        <!-- Dialog View 1: Scan QRIS -->
+        <div class="qris-modal" id="modal-qris-scan">
+            <div class="qris-modal-header">
+                <h3>
+                    <i class="fa-solid fa-qrcode" style="font-size: 1.4rem; color: var(--accent);"></i>
+                    <span>PEMBAYARAN QRIS MANUAL</span>
+                </h3>
+                <button class="close-modal-btn" onclick="closeQrisModal()">&times;</button>
+            </div>
+            
+            <div class="qris-modal-body">
+                <div class="qris-timer-box">
+                    <i class="fa-regular fa-clock"></i>
+                    <span>Sisa Waktu Pembayaran: <strong id="qris-timer">15:00</strong></span>
+                </div>
+                
+                <span class="qris-amount-title">Total Nominal Transfer</span>
+                <span class="qris-amount-value" id="qris-amount-display">Rp 189.000</span>
+                
+                <div class="qris-code-container">
+                    <!-- Vector SVG simulated QR code with high-end aesthetic details -->
+                    <svg class="qris-qr-image" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background -->
+                        <rect width="100" height="100" fill="#ffffff" />
+                        <!-- Outer borders representation -->
+                        <rect x="5" y="5" width="90" height="90" fill="none" stroke="#042125" stroke-width="2" />
+                        <!-- QR Code Top-Left Marker -->
+                        <rect x="10" y="10" width="20" height="20" fill="#042125" />
+                        <rect x="13" y="13" width="14" height="14" fill="#ffffff" />
+                        <rect x="16" y="16" width="8" height="8" fill="#042125" />
+                        <!-- QR Code Top-Right Marker -->
+                        <rect x="70" y="10" width="20" height="20" fill="#042125" />
+                        <rect x="73" y="13" width="14" height="14" fill="#ffffff" />
+                        <rect x="76" y="16" width="8" height="8" fill="#042125" />
+                        <!-- QR Code Bottom-Left Marker -->
+                        <rect x="10" y="70" width="20" height="20" fill="#042125" />
+                        <rect x="13" y="73" width="14" height="14" fill="#ffffff" />
+                        <rect x="16" y="76" width="8" height="8" fill="#042125" />
+                        <!-- Simulated QR Code Pixels patterns -->
+                        <rect x="35" y="10" width="6" height="6" fill="#35646d" />
+                        <rect x="45" y="15" width="12" height="6" fill="#042125" />
+                        <rect x="60" y="12" width="6" height="12" fill="#35646d" />
+                        <rect x="35" y="24" width="18" height="6" fill="#042125" />
+                        <rect x="10" y="35" width="6" height="18" fill="#042125" />
+                        <rect x="22" y="40" width="12" height="6" fill="#35646d" />
+                        <rect x="40" y="35" width="20" height="20" fill="#042125" />
+                        <rect x="45" y="40" width="10" height="10" fill="#ffffff" />
+                        <rect x="70" y="35" width="6" height="12" fill="#35646d" />
+                        <rect x="82" y="38" width="8" height="18" fill="#042125" />
+                        <rect x="10" y="60" width="18" height="6" fill="#35646d" />
+                        <rect x="35" y="60" width="12" height="12" fill="#042125" />
+                        <rect x="52" y="65" width="6" height="6" fill="#35646d" />
+                        <rect x="70" y="60" width="20" height="6" fill="#042125" />
+                        <rect x="35" y="78" width="18" height="12" fill="#35646d" />
+                        <rect x="60" y="74" width="6" height="16" fill="#042125" />
+                        <rect x="74" y="74" width="16" height="16" fill="#042125" />
+                        <rect x="78" y="78" width="8" height="8" fill="#ffffff" />
+                    </svg>
+                    <div class="qris-logo-accent">QRIS</div>
+                </div>
+                
+                <p class="qris-instructions">Silakan scan QRIS di atas menggunakan GoPay, OVO, DANA, BCA Mobile, ShopeePay, atau Mobile Banking lainnya. <strong>Wajib mengirim bukti transfer setelah melakukan pembayaran.</strong></p>
+                
+                <div class="qris-status-box" style="background-color: var(--accent-light); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 12px;">
+                    <i class="fa-solid fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i>
+                    <span style="font-size: 0.85rem; color: var(--primary); font-weight: 500;">Setelah transfer selesai, silakan klik tombol konfirmasi di bawah.</span>
+                </div>
+                
+                <!-- Main manual submit button -->
+                <button class="btn btn-primary btn-full-width" style="margin-top: 5px; background: #2ecc71; border-color: #27ae60;" onclick="simulatePaymentSuccess()">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem; margin-right: 8px;"></i> Saya Sudah Transfer (Kirim Bukti ke WA)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dialog View 2: Success Confirmation & Invoice -->
+        <div class="qris-modal" id="modal-qris-success" style="display: none;">
+            <div class="success-screen id-active-screen">
+                <div class="success-icon-wrapper" style="background-color: var(--accent); color: var(--primary);">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <h3 class="success-title">Pemesanan Dicatat!</h3>
+                <p class="success-desc">Terima kasih! Pesanan pre-order kamu telah berhasil dicatat oleh sistem. <strong>Langkah Terakhir:</strong> Silakan klik tombol di bawah untuk mengirimkan bukti transfer QRIS ke WhatsApp Admin untuk verifikasi manual.</p>
+                
+                <div class="receipt-card">
+                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; font-weight: 700; color: var(--primary);">
+                        <i class="fa-solid fa-receipt"></i> INVOICE PRE-ORDER #<span id="receipt-order-id">UB-491295</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Nama Pemesan:</span>
+                        <strong id="receipt-name">Mochammad Rafly</strong>
+                    </div>
+                    <div class="receipt-row">
+                        <span>NIM / No. Peserta:</span>
+                        <strong id="receipt-nim">265150200111</strong>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Fakultas:</span>
+                        <strong id="receipt-faculty">FILKOM</strong>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Metode Bayar:</span>
+                        <span>QRIS Manual (Konfirmasi WA)</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Status Pesanan:</span>
+                        <strong style="color: var(--accent); font-weight: 600;" id="receipt-status"><i class="fa-solid fa-user-clock"></i> Menunggu Verifikasi</strong>
+                    </div>
+                    <div class="receipt-row total">
+                        <span>Total Pembayaran:</span>
+                        <span id="receipt-total" style="color: var(--primary);">Rp 189.000</span>
+                    </div>
+                </div>
+                
+                <div class="success-actions">
+                    <!-- WhatsApp Admin Integration - Preformatted Text! -->
+                    <button class="btn btn-primary" onclick="sendWhatsAppConfirmation()" style="background-color: #2ecc71; border-color: #27ae60;"><i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> Kirim Bukti ke WA Admin 085111225515 (Wajib)</button>
+                    <button class="btn btn-secondary" onclick="downloadReceipt()"><i class="fa-solid fa-download"></i> Unduh Tanda Terima (.TXT)</button>
+                    <button class="btn btn-outline" style="color: var(--primary); border-color: var(--border-color);" onclick="closeQrisModal()"><i class="fa-solid fa-circle-xmark"></i> Selesai & Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                
+                <div class="footer-info">
+                    <h3>OspekUB<span>.kit</span></h3>
+                    <p>Pusat pemesanan pre-order resmi perlengkapan, atribut wajib, dan pakaian formal untuk mahasiswa baru Universitas Brawijaya. Aman, cepat, berkualitas tinggi, dan bebas repot menjelang OSPEK.</p>
+                    
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>support@ospekubkit.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-phone-volume"></i>
+                            <span>+62 851-1122-5515 (Admin WhatsApp)</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Kawasan UB, Jl. Veteran, Ketawanggede, Lowokwaru, Malang, Jawa Timur</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-links-group" style="padding-top: 10px;">
+                    <h4>Tautan Penting & Informasi</h4>
+                    <a href="#hero" class="footer-link"><i class="fa-solid fa-caret-right"></i> Beranda</a>
+                    <a href="#produk" class="footer-link"><i class="fa-solid fa-caret-right"></i> Pre-Order Paket Atribut</a>
+                    <a href="#produk" class="footer-link"><i class="fa-solid fa-caret-right"></i> Custom Pembelian Satuan</a>
+                    <a href="#checkout" class="footer-link"><i class="fa-solid fa-caret-right"></i> Formulir Pengisian Pesanan</a>
+                    <a href="https://prasetya.ub.ac.id" target="_blank" class="footer-link"><i class="fa-solid fa-external-link-alt"></i> Info Resmi Universitas Brawijaya</a>
+                </div>
+                
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 OspekUB.kit. Dibuat dengan bangga untuk menyambut Ksatria Muda Universitas Brawijaya.</p>
+                <div style="display: flex; gap: 16px;">
+                    <span>S&K Berlaku</span>
+                    <span>Kebijakan Privasi</span>
+                    <span>Pembayaran QRIS Aman</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const _SUPABASE_URL = 'https://alyouziqlqxjouyhodmi.supabase.co';
+        const _SUPABASE_KEY = 'sb_publishable_5mX3Dgpq0QHOA-siiQ6cxg_OSg3qaIe';
+        const supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+    </script>
+    <!-- JS Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
