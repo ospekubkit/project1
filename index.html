@@ -273,238 +273,19 @@
                     <!-- Left: Categories and Items List -->
                     <div class="categories-container">
                         
-                        <!-- Category 1: Kit Atribut -->
+                        <!-- Category 1: Kit Atribut (Loaded dynamically from Supabase) -->
                         <div class="category-block">
-                            <h3><i class="fa-solid fa-tags"></i> Kategori A: Atribut & Merchandise UB</h3>
+                            <h3><i class="fa-solid fa-tags"></i> Kategori A: Atribut &amp; Merchandise UB</h3>
                             <div class="items-grid" id="category-merch-grid">
-                                <!-- Items will be dynamically loaded/managed or directly rendered in HTML -->
-                                
-                                <div class="item-card" data-id="cat-buku">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
-                                        <div class="item-info">
-                                            <h4>Buku Catatan Eksklusif UB</h4>
-                                            <span class="item-price">Rp 15.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-buku', 'Buku Catatan Eksklusif UB', 15000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-pulpen">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-pen-nib"></i></div>
-                                        <div class="item-info">
-                                            <h4>Pulpen Aksen Emas UB</h4>
-                                            <span class="item-price">Rp 5.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-pulpen', 'Pulpen Aksen Emas UB', 5000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-lanyard">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-id-badge"></i></div>
-                                        <div class="item-info">
-                                            <h4>Lanyard & ID Card Holder UB</h4>
-                                            <span class="item-price">Rp 18.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-lanyard', 'Lanyard & ID Card Holder UB', 18000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-totebag">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
-                                        <div class="item-info">
-                                            <h4>Tote Bag Kanvas Tebal UB</h4>
-                                            <span class="item-price">Rp 25.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-totebag', 'Tote Bag Kanvas Tebal UB', 25000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-topi">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-hat-cowboy"></i></div>
-                                        <div class="item-info">
-                                            <h4>Topi Hitam UB Resmi</h4>
-                                            <span class="item-price">Rp 20.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-topi', 'Topi Hitam UB Resmi', 20000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-tumbler">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-bottle-water"></i></div>
-                                        <div class="item-info">
-                                            <h4>Tumbler Aluminium UB (Eco)</h4>
-                                            <span class="item-price">Rp 35.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-tumbler', 'Tumbler Aluminium UB (Eco)', 35000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="cat-pin">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-certificate"></i></div>
-                                        <div class="item-info">
-                                            <h4>PIN Logam & Gantungan Kunci UB</h4>
-                                            <span class="item-price">Rp 7.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('cat-pin', 'PIN Logam & Gantungan Kunci UB', 7000, '-')">Tambah</button>
-                                    </div>
-                                </div>
+                                <div style="color: var(--text-muted); padding: 20px; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat produk...</div>
                             </div>
                         </div>
 
-                        <!-- Category 2: Pakaian Formal -->
+                        <!-- Category 2: Pakaian Formal (Loaded dynamically from Supabase) -->
                         <div class="category-block">
-                            <h3><i class="fa-solid fa-shirt"></i> Kategori B: Pakaian Formal & Sepatu</h3>
+                            <h3><i class="fa-solid fa-shirt"></i> Kategori B: Pakaian Formal &amp; Sepatu</h3>
                             <div class="items-grid" id="category-clothing-grid">
-                                
-                                <div class="item-card" data-id="single-shirt">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-shirt"></i></div>
-                                        <div class="item-info">
-                                            <h4>Kemeja Putih Polos Panjang</h4>
-                                            <span class="item-price">Rp 55.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <select class="item-size-select" id="size-single-shirt">
-                                            <option value="S">S</option>
-                                            <option value="M" selected>M</option>
-                                            <option value="L">L</option>
-                                            <option value="XL">XL</option>
-                                            <option value="XXL">XXL (+Rp 5rb)</option>
-                                        </select>
-                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-shirt', 'Kemeja Putih Polos Panjang', 55000, 'size-single-shirt')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-tie">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-user-tie"></i></div>
-                                        <div class="item-info">
-                                            <h4>Dasi Hitam Formal Instan</h4>
-                                            <span class="item-price">Rp 12.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('single-tie', 'Dasi Hitam Formal Instan', 12000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-pants">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-person-half-dress"></i></div>
-                                        <div class="item-info">
-                                            <h4>Celana Hitam Formal Pria</h4>
-                                            <span class="item-price">Rp 75.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <select class="item-size-select" id="size-single-pants">
-                                            <option value="S">S</option>
-                                            <option value="M" selected>M</option>
-                                            <option value="L">L</option>
-                                            <option value="XL">XL</option>
-                                            <option value="XXL">XXL (+Rp 5rb)</option>
-                                        </select>
-                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pants', 'Celana Hitam Formal Pria', 75000, 'size-single-pants')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-skirt">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-person-dress"></i></div>
-                                        <div class="item-info">
-                                            <h4>Rok Hitam Formal Wanita</h4>
-                                            <span class="item-price">Rp 65.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <select class="item-size-select" id="size-single-skirt">
-                                            <option value="S">S</option>
-                                            <option value="M" selected>M</option>
-                                            <option value="L">L</option>
-                                            <option value="XL">XL</option>
-                                            <option value="XXL">XXL (+Rp 5rb)</option>
-                                        </select>
-                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-skirt', 'Rok Hitam Formal Wanita', 65000, 'size-single-skirt')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-socks">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-socks"></i></div>
-                                        <div class="item-info">
-                                            <h4>Kaos Kaki Putih Tebal (2 pasang)</h4>
-                                            <span class="item-price">Rp 8.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <button class="add-single-item-btn" onclick="addSingleToCart('single-socks', 'Kaos Kaki Putih Tebal', 8000, '-')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-pantofel-pria">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-shoe-prints"></i></div>
-                                        <div class="item-info">
-                                            <h4>Sepatu Pantofel Pria</h4>
-                                            <span class="item-price">Rp 95.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <select class="item-size-select" id="size-single-pantofel-pria">
-                                            <option value="38">38</option>
-                                            <option value="39">39</option>
-                                            <option value="40" selected>40</option>
-                                            <option value="41">41</option>
-                                            <option value="42">42</option>
-                                            <option value="43">43</option>
-                                            <option value="44">44</option>
-                                            <option value="45">45</option>
-                                        </select>
-                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pantofel-pria', 'Sepatu Pantofel Pria', 95000, 'size-single-pantofel-pria')">Tambah</button>
-                                    </div>
-                                </div>
-
-                                <div class="item-card" data-id="single-pantofel-wanita">
-                                    <div class="item-card-left">
-                                        <div class="item-icon-box"><i class="fa-solid fa-shoe-prints" style="transform: rotate(-30deg);"></i></div>
-                                        <div class="item-info">
-                                            <h4>Sepatu Pantofel Wanita</h4>
-                                            <span class="item-price">Rp 85.000</span>
-                                        </div>
-                                    </div>
-                                    <div class="item-card-right">
-                                        <select class="item-size-select" id="size-single-pantofel-wanita">
-                                            <option value="36">36</option>
-                                            <option value="37" selected>37</option>
-                                            <option value="38">38</option>
-                                            <option value="39">39</option>
-                                            <option value="40">40</option>
-                                        </select>
-                                        <button class="add-single-item-btn" onclick="addSingleClothingToCart('single-pantofel-wanita', 'Sepatu Pantofel Wanita', 85000, 'size-single-pantofel-wanita')">Tambah</button>
-                                    </div>
-                                </div>
+                                <div style="color: var(--text-muted); padding: 20px; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat produk...</div>
                             </div>
                         </div>
                     </div>
@@ -642,6 +423,12 @@
                                 <label class="form-label" for="student-department">Jurusan / Program Studi</label>
                                 <input type="text" class="form-input" id="student-department" placeholder="Contoh: Teknik Informatika" required>
                             </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label class="form-label" for="referral-code"><i class="fa-solid fa-tag" style="color: var(--accent);"></i> Kode Referral (Opsional)</label>
+                            <input type="text" class="form-input" id="referral-code" placeholder="Masukkan kode referral jika ada (contoh: BEMFILKOM26)" style="text-transform: uppercase;">
+                            <span id="referral-status" style="font-size:0.78rem; margin-top:4px; display:block;"></span>
                         </div>
                         
                         <div class="checkout-terms">

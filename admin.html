@@ -710,6 +710,30 @@
                 display: none; /* Mobile navigation could be hidden or custom toggled */
             }
         }
+
+        .modal-content-admin {
+            background: rgba(2, 17, 19, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
     </style>
 </head>
 <body>
@@ -739,6 +763,48 @@
        ========================================================================== -->
     <div class="admin-container" id="admin-dashboard-container" style="display: none;">
         
+        <!-- ==========================================================================
+       MODAL TAMBAH/EDIT PRODUK
+       ========================================================================== -->
+    <div id="product-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
+        <div class="modal-content-admin">
+            <button class="modal-close-btn" onclick="document.getElementById('product-modal').style.display='none'">&times;</button>
+            <h3 id="product-modal-title" style="margin-bottom:20px; color:var(--accent);">Tambah Produk Baru</h3>
+            <form id="product-form" onsubmit="handleSaveProduct(event)">
+                <input type="hidden" id="prod-action-type" value="add">
+                <input type="hidden" id="prod-id-edit" value="">
+                
+                <div class="admin-form-group">
+                    <label>ID Unik Produk (huruf kecil & strip, contoh: cat-topi)</label>
+                    <input type="text" id="prod-id" class="admin-form-input" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="prod-name" class="admin-form-input" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>Harga (Rp)</label>
+                    <input type="number" id="prod-price" class="admin-form-input" min="0" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>Kategori</label>
+                    <select id="prod-category" class="admin-form-input" required>
+                        <option value="merch">Merchandise / Atribut (Kategori A)</option>
+                        <option value="clothing">Pakaian (Kategori B)</option>
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label>Icon Class (FontAwesome, contoh: fa-hat-cowboy)</label>
+                    <input type="text" id="prod-icon" class="admin-form-input" value="fa-circle-check" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;"><i class="fa-solid fa-save"></i> Simpan Produk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase / Core Script logic -->
+        
         <!-- Sidebar Menu Navigation -->
         <aside class="sidebar">
             <div class="sidebar-logo">
@@ -764,6 +830,11 @@
                 <li class="nav-item" id="nav-item-products">
                     <button onclick="switchAdminTab('products')">
                         <i class="fa-solid fa-tags"></i> Manajemen Produk
+                    </button>
+                </li>
+                <li class="nav-item" id="nav-item-affiliates">
+                    <button onclick="switchAdminTab('affiliates')">
+                        <i class="fa-solid fa-users-viewfinder"></i> Manajemen Afiliasi
                     </button>
                 </li>
             </ul>
@@ -974,13 +1045,57 @@
                         </div>
 
                         <!-- Individual Single items pricing list -->
-                        <h4 style="color: var(--accent); margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">Harga Barang Satuan (Kategori A & B)</h4>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                            <h4 style="color: var(--accent); font-family: 'Montserrat', sans-serif; margin:0;">Manajemen Barang Satuan</h4>
+                            <button type="button" class="btn btn-secondary" onclick="showAddProductModal()" style="font-size:0.8rem; padding: 6px 12px;"><i class="fa-solid fa-plus"></i> Tambah Produk Baru</button>
+                        </div>
                         <div class="product-edit-list" id="product-inputs-container">
                             <!-- Populated dynamically via JS -->
                         </div>
 
-                        <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Simpan Daftar & Harga Barang</button>
+                        <button type="submit" class="btn-save" style="margin-top:20px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Harga Paket & Konfigurasi</button>
                     </form>
+                </div>
+
+            </div>
+
+            <!-- ==========================================================================
+               VIEW 5: AFFILIATES MANAGER
+               ========================================================================== -->
+            <div class="admin-view" id="view-affiliates" style="display: none;">
+                
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-users-viewfinder"></i> Manajemen Kode Referral (Afiliasi)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px;">Kelola kode unik yang dapat digunakan oleh partner atau panitia untuk melacak jumlah pendaftar yang mereka ajak. Mahasiswa dapat memasukkan kode ini saat checkout.</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <form onsubmit="handleAddAffiliate(event)" class="form-grid" style="align-items: end;">
+                            <div class="admin-form-group" style="margin: 0;">
+                                <label for="new-affiliate-code">Kode Unik (Misal: BEMFILKOM26)</label>
+                                <input type="text" id="new-affiliate-code" class="admin-form-input" required placeholder="Gunakan huruf besar & angka">
+                            </div>
+                            <div class="admin-form-group" style="margin: 0;">
+                                <label for="new-affiliate-name">Nama Pemilik/Lembaga</label>
+                                <input type="text" id="new-affiliate-name" class="admin-form-input" required placeholder="BEM FILKOM">
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary" style="height: 48px; width:100%; border-radius:8px;"><i class="fa-solid fa-plus"></i> Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="orders-table" id="affiliates-table" style="margin-top:20px;">
+                        <thead>
+                            <tr>
+                                <th>Kode Referral</th>
+                                <th>Nama Pemilik</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="affiliates-tbody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -1083,7 +1198,7 @@
             // Load and render all components
             loadOrdersData();
             loadBatchConfigInputs();
-            loadProductsConfigInputs();
+            loadProductsFromDB();
         }
 
         function handleLogout() {
@@ -1110,19 +1225,23 @@
             if (tabId === 'summary') {
                 titleText.textContent = 'Ringkasan Utama';
                 descText.textContent = 'Pantau data pemesanan perlengkapan OSPEK UB maba 2026 secara langsung.';
-                loadOrdersData(); // Reload stats and quick orders
+                loadOrdersData();
             } else if (tabId === 'orders') {
                 titleText.textContent = 'Daftar Pesanan Mahasiswa';
                 descText.textContent = 'Kelola status pembayaran dan verifikasi bukti transfer maba.';
-                loadOrdersData(); // Reload table
+                loadOrdersData();
             } else if (tabId === 'batch') {
                 titleText.textContent = 'Pengaturan Batch PO';
                 descText.textContent = 'Ubah judul batch, batas countdown waktu, dan progress slots kuota.';
                 loadBatchConfigInputs();
             } else if (tabId === 'products') {
                 titleText.textContent = 'Manajemen Produk & Harga';
-                descText.textContent = 'Sesuaikan harga coret paket, harga promo, dan harga barang satuan.';
-                loadProductsConfigInputs();
+                descText.textContent = 'Tambah, edit nama, harga, atau hapus barang satuan dari katalog.';
+                loadProductsFromDB();
+            } else if (tabId === 'affiliates') {
+                titleText.textContent = 'Manajemen Afiliasi';
+                descText.textContent = 'Buat dan kelola kode referral untuk partner atau panitia afiliasi.';
+                loadAffiliates();
             }
         }
 
@@ -1398,79 +1517,201 @@
         }
 
         // ==========================================================================
-        // 5. PRODUCTS & PRICES MANAGER LOGIC
+        // 5. PRODUCTS MANAGER (SUPABASE-BASED)
         // ==========================================================================
-        function loadProductsConfigInputs() {
+        async function loadProductsFromDB() {
+            const container = document.getElementById('product-inputs-container');
+            container.innerHTML = '<p style="color:var(--text-muted); padding: 10px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data produk...</p>';
+            
+            // Load package prices from localStorage
             let config = defaultProductsConfig;
             if (localStorage.getItem('ub_products_config')) {
                 config = JSON.parse(localStorage.getItem('ub_products_config'));
             }
-
-            // Populate packages prices inputs
             document.getElementById('price-kit-actual').value = config.kitActualPrice;
             document.getElementById('price-kit-orig').value = config.kitOriginalPrice;
             document.getElementById('price-clothing-actual').value = config.clothingActualPrice;
             document.getElementById('price-clothing-orig').value = config.clothingOriginalPrice;
 
-            // Populate single items input container list dynamically
-            const container = document.getElementById('product-inputs-container');
-            container.innerHTML = '';
-
-            Object.keys(config.singleItems).forEach(id => {
-                const price = config.singleItems[id];
-                const name = productNamesMap[id] || id;
+            try {
+                const { data, error } = await db.from('products').select('*').order('category').order('name');
+                if (error) throw error;
                 
-                // Icon representation based on category or item type
-                let iconClass = 'fa-solid fa-circle-notch';
-                if (id.includes('buku') || id.includes('pulpen')) iconClass = 'fa-solid fa-pen-fancy';
-                else if (id.includes('lanyard') || id.includes('pin')) iconClass = 'fa-solid fa-id-badge';
-                else if (id.includes('totebag') || id.includes('tumbler')) iconClass = 'fa-solid fa-bag-shopping';
-                else if (id.includes('shirt') || id.includes('pants') || id.includes('skirt') || id.includes('socks')) iconClass = 'fa-solid fa-shirt';
-                else if (id.includes('pantofel')) iconClass = 'fa-solid fa-shoe-prints';
+                container.innerHTML = '';
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-muted);">Belum ada produk. Klik "Tambah Produk Baru" untuk memulai.</p>';
+                    return;
+                }
+                data.forEach(prod => renderProductRow(prod, container));
+            } catch (err) {
+                console.error('Gagal memuat produk:', err);
+                container.innerHTML = '<p style="color:red;">Gagal memuat data produk dari database.</p>';
+            }
+        }
 
-                const row = document.createElement('div');
-                row.className = 'product-edit-row';
-                row.innerHTML = `
-                    <div class="product-edit-info">
-                        <i class="${iconClass}"></i>
-                        <span>${name}</span>
+        function renderProductRow(prod, container) {
+            const row = document.createElement('div');
+            row.className = 'product-edit-row';
+            row.id = `prod-row-${prod.id}`;
+            const categoryLabel = prod.category === 'merch' ? '🏅 Atribut' : '👕 Pakaian';
+            row.innerHTML = `
+                <div class="product-edit-info">
+                    <i class="fa-solid ${prod.icon}" style="min-width:20px;"></i>
+                    <div>
+                        <span style="font-weight:600;">${prod.name}</span><br>
+                        <small style="color:var(--text-muted);">${categoryLabel} · ID: ${prod.id}</small>
                     </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                     <div class="product-edit-input-box">
                         <span>Rp</span>
-                        <input type="number" class="single-item-price-input" data-id="${id}" value="${price}" min="0" required>
+                        <input type="number" class="single-item-price-input" data-id="${prod.id}" value="${prod.price}" min="0" style="width:90px;">
                     </div>
-                `;
-                container.appendChild(row);
-            });
+                    <button type="button" onclick="showEditProductModal(${JSON.stringify(prod).replace(/"/g,'&quot;')})" style="background:rgba(52,152,219,0.15); color:#3498db; border:1px solid rgba(52,152,219,0.3); padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button type="button" onclick="deleteProduct('${prod.id}')" style="background:rgba(231,76,60,0.15); color:#e74c3c; border:1px solid rgba(231,76,60,0.3); padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        function showAddProductModal() {
+            document.getElementById('product-modal-title').textContent = 'Tambah Produk Baru';
+            document.getElementById('prod-action-type').value = 'add';
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-id').disabled = false;
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-category').value = 'merch';
+            document.getElementById('prod-icon').value = 'fa-circle-check';
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+
+        function showEditProductModal(prod) {
+            document.getElementById('product-modal-title').textContent = 'Edit Produk';
+            document.getElementById('prod-action-type').value = 'edit';
+            document.getElementById('prod-id').value = prod.id;
+            document.getElementById('prod-id').disabled = true;
+            document.getElementById('prod-name').value = prod.name;
+            document.getElementById('prod-price').value = prod.price;
+            document.getElementById('prod-category').value = prod.category;
+            document.getElementById('prod-icon').value = prod.icon;
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+
+        async function handleSaveProduct(event) {
+            event.preventDefault();
+            const action = document.getElementById('prod-action-type').value;
+            const id = action === 'add' ? document.getElementById('prod-id').value.trim().toLowerCase() : document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value.trim();
+            const price = parseInt(document.getElementById('prod-price').value);
+            const category = document.getElementById('prod-category').value;
+            const icon = document.getElementById('prod-icon').value.trim();
+
+            if (!id || !name || !price || !category || !icon) {
+                alert('Semua field wajib diisi!'); return;
+            }
+
+            const productData = { id, name, price, icon, category };
+            let error;
+
+            if (action === 'add') {
+                ({ error } = await db.from('products').insert([productData]));
+            } else {
+                ({ error } = await db.from('products').update({ name, price, icon, category }).eq('id', id));
+            }
+
+            if (error) {
+                alert('Gagal menyimpan: ' + error.message); return;
+            }
+
+            document.getElementById('product-modal').style.display = 'none';
+            showAdminToast(action === 'add' ? 'Produk baru berhasil ditambahkan!' : 'Produk berhasil diperbarui!');
+            loadProductsFromDB();
+        }
+
+        async function deleteProduct(productId) {
+            if (!confirm(`Hapus produk dengan ID "${productId}" secara permanen?`)) return;
+            const { error } = await db.from('products').delete().eq('id', productId);
+            if (error) { alert('Gagal menghapus: ' + error.message); return; }
+            showAdminToast('Produk berhasil dihapus!');
+            loadProductsFromDB();
         }
 
         function saveProductsSettings(event) {
             event.preventDefault();
-
-            // Retrieve updated packages pricing inputs
             const kitActualPrice = parseInt(document.getElementById('price-kit-actual').value);
             const kitOriginalPrice = parseInt(document.getElementById('price-kit-orig').value);
             const clothingActualPrice = parseInt(document.getElementById('price-clothing-actual').value);
             const clothingOriginalPrice = parseInt(document.getElementById('price-clothing-orig').value);
 
-            // Retrieve updated single items prices from DOM inputs
-            const singleItems = {};
-            document.querySelectorAll('.single-item-price-input').forEach(input => {
-                const id = input.getAttribute('data-id');
-                const price = parseInt(input.value);
-                singleItems[id] = price;
-            });
-
-            const updatedProductsConfig = {
-                kitActualPrice,
-                kitOriginalPrice,
-                clothingActualPrice,
-                clothingOriginalPrice,
-                singleItems
-            };
-
+            const updatedProductsConfig = { kitActualPrice, kitOriginalPrice, clothingActualPrice, clothingOriginalPrice, singleItems: {} };
             localStorage.setItem('ub_products_config', JSON.stringify(updatedProductsConfig));
-            showAdminToast('Daftar & Harga Barang berhasil diperbarui!');
+            showAdminToast('Harga Paket berhasil disimpan!');
+        }
+
+        // ==========================================================================
+        // 6. AFFILIATES MANAGER (SUPABASE-BASED)
+        // ==========================================================================
+        async function loadAffiliates() {
+            const tbody = document.getElementById('affiliates-tbody');
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</td></tr>';
+            
+            try {
+                const { data, error } = await db.from('affiliates').select('*').order('code');
+                if (error) throw error;
+                
+                tbody.innerHTML = '';
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Belum ada kode referral. Tambahkan di atas.</td></tr>';
+                    return;
+                }
+                data.forEach(aff => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong style="color:var(--accent); letter-spacing:1px;">${aff.code}</strong></td>
+                        <td>${aff.name}</td>
+                        <td>
+                            <button onclick="deleteAffiliate('${aff.code}')" style="background:rgba(231,76,60,0.15); color:#e74c3c; border:1px solid rgba(231,76,60,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+                                <i class="fa-solid fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Gagal memuat afiliasi:', err);
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">Gagal memuat data.</td></tr>';
+            }
+        }
+
+        async function handleAddAffiliate(event) {
+            event.preventDefault();
+            const code = document.getElementById('new-affiliate-code').value.trim().toUpperCase();
+            const name = document.getElementById('new-affiliate-name').value.trim();
+            
+            if (!code || !name) { alert('Kode dan nama wajib diisi!'); return; }
+            
+            const { error } = await db.from('affiliates').insert([{ code, name }]);
+            if (error) {
+                alert('Gagal menambahkan: ' + (error.message.includes('duplicate') ? 'Kode "' + code + '" sudah ada!' : error.message));
+                return;
+            }
+            document.getElementById('new-affiliate-code').value = '';
+            document.getElementById('new-affiliate-name').value = '';
+            showAdminToast(`Kode referral ${code} berhasil ditambahkan!`);
+            loadAffiliates();
+        }
+
+        async function deleteAffiliate(code) {
+            if (!confirm(`Hapus kode referral "${code}"? Kode ini tidak akan bisa digunakan lagi oleh mahasiswa.`)) return;
+            const { error } = await db.from('affiliates').delete().eq('code', code);
+            if (error) { alert('Gagal menghapus: ' + error.message); return; }
+            showAdminToast(`Kode ${code} berhasil dihapus!`);
+            loadAffiliates();
         }
 
         // ==========================================================================

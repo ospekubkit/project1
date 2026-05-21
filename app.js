@@ -69,7 +69,7 @@ function initLocalConfigs() {
 }
 
 // Apply Prices to main website elements dynamically
-function applyProductsConfigToDOM() {
+async function applyProductsConfigToDOM() {
     // Paket A Prices
     const packKitActual = document.querySelector('#pack-kit-card .actual-price');
     if (packKitActual) packKitActual.textContent = formatRupiah(productsConfig.kitActualPrice);
@@ -84,16 +84,81 @@ function applyProductsConfigToDOM() {
     const packClothOrig = document.querySelector('#pack-clothing-card .original-price');
     if (packClothOrig) packClothOrig.textContent = formatRupiah(productsConfig.clothingOriginalPrice);
     
-    // Single Items prices
-    Object.keys(productsConfig.singleItems).forEach(id => {
-        const itemCard = document.querySelector(`.item-card[data-id="${id}"]`);
-        if (itemCard) {
-            const priceEl = itemCard.querySelector('.item-price');
-            if (priceEl) {
-                priceEl.textContent = formatRupiah(productsConfig.singleItems[id]);
-            }
+    // Single Items - Fetch from Supabase dynamically
+    try {
+        const merchGrid = document.getElementById('category-merch-grid');
+        const clothingGrid = document.getElementById('category-clothing-grid');
+        if (!merchGrid || !clothingGrid) return;
+        
+        const { data, error } = await db.from('products').select('*').order('name');
+        if (error) throw error;
+        
+        merchGrid.innerHTML = '';
+        clothingGrid.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            merchGrid.innerHTML = '<div style="color:var(--text-muted); padding:20px;">Katalog kosong.</div>';
+            clothingGrid.innerHTML = '<div style="color:var(--text-muted); padding:20px;">Katalog kosong.</div>';
+            return;
         }
-    });
+
+        data.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.setAttribute('data-id', prod.id);
+            
+            // Check if clothing needs size selector
+            let hasSize = ['single-shirt', 'single-pants', 'single-skirt', 'single-pantofel-pria', 'single-pantofel-wanita'].includes(prod.id);
+            
+            let sizeOptions = '';
+            if (hasSize) {
+                if (prod.id.includes('pantofel')) {
+                    if (prod.id.includes('wanita')) {
+                        sizeOptions = `<option value="36">36</option><option value="37" selected>37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>`;
+                    } else {
+                        sizeOptions = `<option value="38">38</option><option value="39">39</option><option value="40" selected>40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>`;
+                    }
+                } else {
+                    sizeOptions = `<option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL (+Rp 5rb)</option>`;
+                }
+            }
+            
+            let rightSide = '';
+            if (hasSize) {
+                rightSide = `
+                    <select class="item-size-select" id="size-${prod.id}">
+                        ${sizeOptions}
+                    </select>
+                    <button class="add-single-item-btn" onclick="addSingleClothingToCart('${prod.id}', '${prod.name.replace(/'/g, "\\'")}', ${prod.price}, 'size-${prod.id}')">Tambah</button>
+                `;
+            } else {
+                rightSide = `
+                    <button class="add-single-item-btn" onclick="addSingleToCart('${prod.id}', '${prod.name.replace(/'/g, "\\'")}', ${prod.price}, '-')">Tambah</button>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="item-card-left">
+                    <div class="item-icon-box"><i class="fa-solid ${prod.icon}"></i></div>
+                    <div class="item-info">
+                        <h4>${prod.name}</h4>
+                        <span class="item-price">${formatRupiah(prod.price)}</span>
+                    </div>
+                </div>
+                <div class="item-card-right">
+                    ${rightSide}
+                </div>
+            `;
+            
+            if (prod.category === 'merch') {
+                merchGrid.appendChild(card);
+            } else {
+                clothingGrid.appendChild(card);
+            }
+        });
+    } catch (err) {
+        console.error('Failed fetching products:', err);
+    }
 }
 
 // Apply Batch Info (Slots and Names) to DOM
@@ -598,10 +663,44 @@ function triggerCheckout(event) {
         return;
     }
     
-    // Konfirmasi Email (sebelum membuka modal bayar)
+    // Konfirmasi Email
     const emailVal = document.getElementById('email-address').value;
     if (!confirm(`Apakah alamat email ini sudah benar?\n\n${emailVal}\n\nInvoice pesanan dan tanda bukti lunas akan dikirimkan secara otomatis ke email ini. Jika salah ketik, mohon perbaiki terlebih dahulu.`)) {
         return;
+    }
+
+    validateReferralAndProceed();
+}
+
+async function validateReferralAndProceed() {
+    const refInput = document.getElementById('referral-code');
+    const refStatus = document.getElementById('referral-status');
+    const refCode = refInput ? refInput.value.trim().toUpperCase() : '';
+    
+    if (refCode) {
+        if (refStatus) {
+            refStatus.textContent = 'Memvalidasi kode...';
+            refStatus.style.color = 'var(--text-muted)';
+        }
+        
+        try {
+            const { data, error } = await db.from('affiliates').select('code').eq('code', refCode).single();
+            if (error || !data) {
+                if (refStatus) {
+                    refStatus.textContent = 'Kode referral tidak valid atau tidak tersedia.';
+                    refStatus.style.color = '#e74c3c';
+                }
+                alert('Checkout ditolak: Kode referral yang Anda masukkan salah atau tidak terdaftar di sistem kami.');
+                return; // Stop checkout
+            }
+            if (refStatus) {
+                refStatus.textContent = 'Kode referral valid!';
+                refStatus.style.color = '#2ecc71';
+            }
+        } catch (err) {
+            alert('Terjadi kesalahan jaringan saat memvalidasi kode. Silakan coba lagi.');
+            return;
+        }
     }
     
     openQrisModal();
