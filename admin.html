@@ -1189,7 +1189,7 @@
                     tr.innerHTML = `
                         <td><strong>#${order.id}</strong></td>
                         <td>${order.date.split(',')[0]}</td>
-                        <td>${order.name}</td>
+                        <td>${order.name}${order.affiliate_code ? `<br><small style="color:#3498db"><i class="fa-solid fa-tag"></i> ${order.affiliate_code}</small>` : ''}</td>
                         <td>${order.faculty.split('(')[1] ? order.faculty.split('(')[1].replace(')', '') : order.faculty}</td>
                         <td><strong>${formatRupiah(order.total)}</strong></td>
                         <td><span class="status-badge ${isLunas ? 'status-paid' : 'status-pending'}">${order.status}</span></td>
@@ -1231,6 +1231,7 @@
                         <strong>${order.name}</strong><br>
                         <span style="font-size: 0.76rem; color: var(--accent);">NIM: ${order.nim}</span><br>
                         <span style="font-size: 0.76rem; color: var(--text-muted);">${order.faculty} - ${order.department}</span>
+                        ${order.affiliate_code ? `<br><span style="font-size: 0.76rem; color: #3498db; font-weight:600;"><i class="fa-solid fa-tags"></i> Ref: ${order.affiliate_code}</span>` : ''}
                     </td>
                     <td>
                         <a href="https://wa.me/${order.whatsapp.replace(/^0/, '62')}" target="_blank" style="color: #2ecc71; text-decoration: none; font-weight:600; display:flex; align-items:center; gap:4px;">
