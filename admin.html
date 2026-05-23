@@ -837,6 +837,11 @@
                         <i class="fa-solid fa-users-viewfinder"></i> Manajemen Afiliasi
                     </button>
                 </li>
+                <li class="nav-item" id="nav-item-sizes">
+                    <button onclick="switchAdminTab('sizes')">
+                        <i class="fa-solid fa-ruler"></i> Konfigurasi Ukuran
+                    </button>
+                </li>
             </ul>
             
             <div class="sidebar-footer">
@@ -1100,6 +1105,45 @@
 
             </div>
 
+            <!-- ==========================================================================
+               VIEW 6: SIZES MANAGER
+               ========================================================================== -->
+            <div class="admin-view" id="view-sizes" style="display: none;">
+                
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-ruler"></i> Konfigurasi Ukuran Pakaian & Sepatu</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px;">Atur pilihan ukuran yang tersedia untuk kemeja, celana, rok, dan pantofel. Pisahkan dengan koma (contoh: S, M, L, XL, XXL).</p>
+                    
+                    <form onsubmit="handleSaveSizesConfig(event)" class="form-grid">
+                        <div class="admin-form-group">
+                            <label>Ukuran Kemeja</label>
+                            <input type="text" id="cfg-size-kemeja" class="admin-form-input" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Ukuran Celana</label>
+                            <input type="text" id="cfg-size-celana" class="admin-form-input" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Ukuran Rok</label>
+                            <input type="text" id="cfg-size-rok" class="admin-form-input" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Ukuran Pantofel Pria</label>
+                            <input type="text" id="cfg-size-pantofel-pria" class="admin-form-input" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Ukuran Pantofel Wanita</label>
+                            <input type="text" id="cfg-size-pantofel-wanita" class="admin-form-input" required>
+                        </div>
+                        
+                        <div style="grid-column: 1 / -1; display:flex; justify-content: flex-end;">
+                            <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Simpan Konfigurasi Ukuran</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
         </main>
 
     </div>
@@ -1242,7 +1286,57 @@
                 titleText.textContent = 'Manajemen Afiliasi';
                 descText.textContent = 'Buat dan kelola kode referral untuk partner atau panitia afiliasi.';
                 loadAffiliates();
+            } else if (tabId === 'sizes') {
+                titleText.textContent = 'Konfigurasi Ukuran';
+                descText.textContent = 'Edit ukuran atribut pakaian untuk menyesuaikan pergantian.';
+                loadSizesConfigInputs();
             }
+        }
+
+        // ==========================================================================
+        // SIZES MANAGER LOGIC
+        // ==========================================================================
+        function loadSizesConfigInputs() {
+            let sizesConfig = {
+                kemeja: ['S', 'M', 'L', 'XL', 'XXL'],
+                celana: ['S', 'M', 'L', 'XL', 'XXL'],
+                rok: ['S', 'M', 'L', 'XL', 'XXL'],
+                pantofelPria: ['38', '39', '40', '41', '42', '43', '44', '45'],
+                pantofelWanita: ['36', '37', '38', '39', '40']
+            };
+            if (localStorage.getItem('ub_sizes_config')) {
+                sizesConfig = JSON.parse(localStorage.getItem('ub_sizes_config'));
+            }
+            
+            document.getElementById('cfg-size-kemeja').value = sizesConfig.kemeja.join(', ');
+            document.getElementById('cfg-size-celana').value = sizesConfig.celana.join(', ');
+            document.getElementById('cfg-size-rok').value = sizesConfig.rok.join(', ');
+            document.getElementById('cfg-size-pantofel-pria').value = sizesConfig.pantofelPria.join(', ');
+            document.getElementById('cfg-size-pantofel-wanita').value = sizesConfig.pantofelWanita.join(', ');
+        }
+        
+        function handleSaveSizesConfig(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const parseSizes = (str) => str.split(',').map(s => s.trim()).filter(s => s);
+                const sizesConfig = {
+                    kemeja: parseSizes(document.getElementById('cfg-size-kemeja').value),
+                    celana: parseSizes(document.getElementById('cfg-size-celana').value),
+                    rok: parseSizes(document.getElementById('cfg-size-rok').value),
+                    pantofelPria: parseSizes(document.getElementById('cfg-size-pantofel-pria').value),
+                    pantofelWanita: parseSizes(document.getElementById('cfg-size-pantofel-wanita').value)
+                };
+                
+                localStorage.setItem('ub_sizes_config', JSON.stringify(sizesConfig));
+                
+                showAdminToast('Konfigurasi ukuran berhasil disimpan!');
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Konfigurasi Ukuran';
+                btn.disabled = false;
+            }, 500);
         }
 
         // ==========================================================================

@@ -45,6 +45,17 @@ let batchConfig = {
     deadlineDate: "" // Empty triggers dynamic generation below
 };
 
+// 3. Sizes Config
+let sizesConfig = {
+    kemeja: ['S', 'M', 'L', 'XL', 'XXL'],
+    celana: ['S', 'M', 'L', 'XL', 'XXL'],
+    rok: ['S', 'M', 'L', 'XL', 'XXL'],
+    pantofelPria: ['38', '39', '40', '41', '42', '43', '44', '45'],
+    pantofelWanita: ['36', '37', '38', '39', '40']
+};
+
+let referralDiscount = 0; // Added for task 3
+
 // Initialize Configs from localStorage
 function initLocalConfigs() {
     // Product Config
@@ -52,6 +63,13 @@ function initLocalConfigs() {
         productsConfig = JSON.parse(localStorage.getItem('ub_products_config'));
     } else {
         localStorage.setItem('ub_products_config', JSON.stringify(productsConfig));
+    }
+
+    // Sizes Config
+    if (localStorage.getItem('ub_sizes_config')) {
+        sizesConfig = JSON.parse(localStorage.getItem('ub_sizes_config'));
+    } else {
+        localStorage.setItem('ub_sizes_config', JSON.stringify(sizesConfig));
     }
 
     // Batch Config
@@ -114,12 +132,16 @@ async function applyProductsConfigToDOM() {
             if (hasSize) {
                 if (prod.id.includes('pantofel')) {
                     if (prod.id.includes('wanita')) {
-                        sizeOptions = `<option value="36">36</option><option value="37" selected>37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option>`;
+                        sizeOptions = sizesConfig.pantofelWanita.map(s => `<option value="${s}">${s}</option>`).join('');
                     } else {
-                        sizeOptions = `<option value="38">38</option><option value="39">39</option><option value="40" selected>40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option>`;
+                        sizeOptions = sizesConfig.pantofelPria.map(s => `<option value="${s}">${s}</option>`).join('');
                     }
+                } else if (prod.id.includes('skirt')) {
+                    sizeOptions = sizesConfig.rok.map(s => `<option value="${s}">${s}</option>`).join('');
+                } else if (prod.id.includes('pants') || prod.id.includes('celana')) {
+                    sizeOptions = sizesConfig.celana.map(s => `<option value="${s}">${s}</option>`).join('');
                 } else {
-                    sizeOptions = `<option value="S">S</option><option value="M" selected>M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL (+Rp 5rb)</option>`;
+                    sizeOptions = sizesConfig.kemeja.map(s => `<option value="${s}">${s}</option>`).join('');
                 }
             }
             
@@ -185,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     applyProductsConfigToDOM();
     applyBatchConfigToDOM();
     initCountdown();
-    initUrgencyProgress();
     updateCartUI();
     
     // Smooth scrolling for hero CTA link
@@ -238,25 +259,7 @@ function initCountdown() {
     setInterval(updateClock, 1000);
 }
 
-function initUrgencyProgress() {
-    const bar = document.getElementById('progress-bar');
-    const filledEl = document.getElementById('slots-filled');
-    const leftEl = document.getElementById('slots-left');
-    
-    // Simulate someone buying every 75 seconds, increasing slot filled slightly
-    setInterval(() => {
-        if (batchConfig.slotsFilled < batchConfig.totalSlots - 5) {
-            batchConfig.slotsFilled += Math.floor(Math.random() * 2) + 1;
-            
-            // Save updated value back to localStorage
-            localStorage.setItem('ub_batch_config', JSON.stringify(batchConfig));
-            
-            if (filledEl) filledEl.textContent = batchConfig.slotsFilled;
-            if (leftEl) leftEl.textContent = batchConfig.totalSlots - batchConfig.slotsFilled;
-            if (bar) bar.style.width = ((batchConfig.slotsFilled / batchConfig.totalSlots) * 100) + '%';
-        }
-    }, 75000);
-}
+
 
 // ==========================================================================
 // 2. TAB SWITCHING
@@ -308,14 +311,13 @@ function setPackageGender(gender) {
         if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Pria (Kulit Sintetis Premium)`;
         
         if (bottomsSelect) {
-            bottomsSelect.options[0].text = 'Ukuran S';
-            bottomsSelect.options[1].text = 'Ukuran M';
-            bottomsSelect.options[2].text = 'Ukuran L';
-            bottomsSelect.options[3].text = 'Ukuran XL';
-            bottomsSelect.options[4].text = 'Ukuran XXL (+Rp 5.000)';
+            bottomsSelect.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         }
         
-        if (shoesSelect) shoesSelect.value = '40';
+        if (shoesSelect) {
+            shoesSelect.innerHTML = sizesConfig.pantofelPria.map(s => `<option value="${s}">Size ${s}</option>`).join('');
+            shoesSelect.value = sizesConfig.pantofelPria.includes('40') ? '40' : sizesConfig.pantofelPria[0];
+        }
     } else {
         if (btnPria) btnPria.classList.remove('active');
         if (btnWanita) btnWanita.classList.add('active');
@@ -325,14 +327,13 @@ function setPackageGender(gender) {
         if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Wanita Hak 3cm`;
         
         if (bottomsSelect) {
-            bottomsSelect.options[0].text = 'Ukuran S';
-            bottomsSelect.options[1].text = 'Ukuran M';
-            bottomsSelect.options[2].text = 'Ukuran L';
-            bottomsSelect.options[3].text = 'Ukuran XL';
-            bottomsSelect.options[4].text = 'Ukuran XXL (+Rp 5.000)';
+            bottomsSelect.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         }
         
-        if (shoesSelect) shoesSelect.value = '37';
+        if (shoesSelect) {
+            shoesSelect.innerHTML = sizesConfig.pantofelWanita.map(s => `<option value="${s}">Size ${s}</option>`).join('');
+            shoesSelect.value = sizesConfig.pantofelWanita.includes('37') ? '37' : sizesConfig.pantofelWanita[0];
+        }
     }
 }
 
@@ -487,7 +488,8 @@ function updateCartUI() {
         }
     });
 
-    const grandTotalAmount = subtotalAmount; // Cart list price is already discounted
+    const grandTotalAmount = subtotalAmount + 1000 - referralDiscount; // +1000 admin fee, -discount if valid
+    const virtualSubtotal = grandTotalAmount + discountAmount;
     
     // Display global count bubble
     if (cartCountEl) cartCountEl.textContent = totalItems;
@@ -580,7 +582,6 @@ function updateCartUI() {
     }
 
     // Update monetary values across elements
-    const virtualSubtotal = grandTotalAmount + discountAmount;
     
     // Cart Drawer Values
     if (subtotalEl) subtotalEl.textContent = formatRupiah(virtualSubtotal);
@@ -677,6 +678,8 @@ async function validateReferralAndProceed() {
     const refStatus = document.getElementById('referral-status');
     const refCode = refInput ? refInput.value.trim().toUpperCase() : '';
     
+    referralDiscount = 0; // Reset discount initially
+
     if (refCode) {
         if (refStatus) {
             refStatus.textContent = 'Memvalidasi kode...';
@@ -690,18 +693,24 @@ async function validateReferralAndProceed() {
                     refStatus.textContent = 'Kode referral tidak valid atau tidak tersedia.';
                     refStatus.style.color = '#e74c3c';
                 }
-                alert('Checkout ditolak: Kode referral yang Anda masukkan salah atau tidak terdaftar di sistem kami.');
                 return; // Stop checkout
             }
             if (refStatus) {
-                refStatus.textContent = 'Kode referral valid!';
+                refStatus.textContent = 'Kode referral valid! (Diskon Rp 10.000)';
                 refStatus.style.color = '#2ecc71';
             }
+            referralDiscount = 10000;
         } catch (err) {
-            alert('Terjadi kesalahan jaringan saat memvalidasi kode. Silakan coba lagi.');
+            if (refStatus) {
+                refStatus.textContent = 'Terjadi kesalahan jaringan saat memvalidasi kode.';
+                refStatus.style.color = '#e74c3c';
+            }
             return;
         }
     }
+    
+    // Update the UI immediately to reflect the discount before opening modal
+    updateCartUI();
     
     openQrisModal();
 }
@@ -715,11 +724,11 @@ function openQrisModal() {
     modalScan.style.display = 'block';
     modalSuccess.style.display = 'none';
     
-    // Get final grand total
     let total = 0;
     cart.forEach(item => {
         total += (item.price * item.quantity);
     });
+    total = total + 1000 - referralDiscount;
     
     document.getElementById('qris-amount-display').textContent = formatRupiah(total);
     
@@ -759,29 +768,35 @@ function startQrisTimer(durationSeconds) {
     }, 1000);
 }
 
-// User manually clicks "Saya Sudah Transfer" to prompt Invoice Generation & Pending WA State
 async function simulatePaymentSuccess() {
+    const proofInput = document.getElementById('payment-proof');
+    if (!proofInput || !proofInput.files || proofInput.files.length === 0) {
+        alert("Harap upload bukti transfer terlebih dahulu!");
+        return;
+    }
+
     clearInterval(qrisTimerInterval);
     
     // Tampilkan state loading
     const btnSubmit = document.querySelector('button[onclick="simulatePaymentSuccess()"]');
     const originalText = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan pesanan...';
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan pesanan & mengupload bukti...';
     btnSubmit.disabled = true;
+
+    // Simulate upload delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     // Generate simulated unique order ID
     const randomOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
     
     // Populate Data
     const nameVal = document.getElementById('full-name').value;
-    const nimVal = document.getElementById('nim-number').value;
-    const facultyVal = document.getElementById('student-faculty').value;
     const waVal = document.getElementById('whatsapp-number').value;
     const emailVal = document.getElementById('email-address').value;
-    const departmentVal = document.getElementById('student-department').value;
     
     let total = 0;
     cart.forEach(item => total += (item.price * item.quantity));
+    total = total + 1000 - referralDiscount; // Include admin fee and discount
 
     // Deteksi Affiliate Code dari URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -792,11 +807,8 @@ async function simulatePaymentSuccess() {
         const { error } = await db.from('orders').insert([{
             id: randomOrderId,
             name: nameVal,
-            nim: nimVal,
             whatsapp: waVal,
             email: emailVal,
-            faculty: facultyVal,
-            department: departmentVal,
             items: cart.map(item => ({
                 name: item.name,
                 quantity: item.quantity,
@@ -804,7 +816,7 @@ async function simulatePaymentSuccess() {
                 price: item.price
             })),
             total: total,
-            status: 'Menunggu Verifikasi WA',
+            status: 'Menunggu Verifikasi',
             affiliate_code: affiliateCode
         }]);
 
@@ -837,25 +849,20 @@ async function simulatePaymentSuccess() {
     
     document.getElementById('receipt-order-id').textContent = randomOrderId;
     document.getElementById('receipt-name').textContent = nameVal;
-    document.getElementById('receipt-nim').textContent = nimVal;
     
-    let facultyShort = facultyVal.split('(')[1] ? facultyVal.split('(')[1].replace(')', '') : facultyVal;
-    document.getElementById('receipt-faculty').textContent = facultyShort;
-    document.getElementById('receipt-total').textContent = formatRupiah(total);
+    const receiptTotalEl = document.getElementById('receipt-total');
+    if(receiptTotalEl) receiptTotalEl.textContent = formatRupiah(total);
 
     // Tetap simpan ke local storage hanya untuk reference browser saat itu
     const orderData = {
         id: randomOrderId,
         date: new Date().toLocaleString('id-ID'),
         name: nameVal,
-        nim: nimVal,
         whatsapp: waVal,
         email: emailVal,
-        faculty: facultyVal,
-        department: departmentVal,
         items: cart,
         total: total,
-        status: 'Menunggu Verifikasi WA'
+        status: 'Menunggu Verifikasi'
     };
     let orders = [];
     if (localStorage.getItem('ub_orders')) {
@@ -928,8 +935,6 @@ _Mohon lampirkan screenshoot bukti transfer pembayaran QRIS di bawah ini untuk d
 function downloadReceipt() {
     const orderId = document.getElementById('receipt-order-id').textContent;
     const name = document.getElementById('receipt-name').textContent;
-    const nim = document.getElementById('receipt-nim').textContent;
-    const faculty = document.getElementById('receipt-faculty').textContent;
     const total = document.getElementById('receipt-total').textContent;
     
     let orders = [];
@@ -954,17 +959,14 @@ Status       : MENUNGGU VERIFIKASI TRANSFER
 Tanggal      : ${new Date().toLocaleDateString('id-ID')}
 -----------------------------------------
 Nama Maba    : ${name}
-NIM/Peserta  : ${nim}
-Fakultas     : ${faculty}
 -----------------------------------------
 Daftar Pesanan:
 ${itemsSummary}
 -----------------------------------------
 TOTAL BAYAR  : ${total}
 =========================================
-Silakan kirimkan berkas tanda terima ini
-dan foto bukti transfer Anda ke WhatsApp:
-0851-1122-5515 untuk pemrosesan order.
+Terima kasih telah memesan.
+Tunggu invoice dikirimkan ke email Anda.
 =========================================`;
 
     // Dynamic file download trigger
