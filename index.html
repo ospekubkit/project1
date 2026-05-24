@@ -161,26 +161,37 @@
                         <div class="package-includes">
                             <h4>Isi Paket (Dapat Semua):</h4>
                             <div class="include-list">
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Buku Catatan Eksklusif UB 2026 (Wajib)</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Pulpen UB Aksen Emas</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Premium Lanyard & ID Card Holder UB</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Tote Bag Kanvas UB Kualitas Tebal</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Topi UB untuk outdoor</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Tumbler Aluminium UB (Ramah Lingkungan)</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> PIN Logam & Gantungan Kunci UB</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Lanyard</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Buku</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Bulpen</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Botol Wudhu</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Tumbler</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Jas Hujan</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Sandal</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Trash Bag</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Spunbund</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Hand Sanitizer</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Roti</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Susu</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Name Tag</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Bag Tag</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Peniti</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Pin Cluster</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Mika Bag Tag</div>
                             </div>
                         </div>
 
                         <!-- Config group for Package A (Standard size/no specific sizes) -->
                         <div class="package-config-group">
                             <span class="package-config-title"><i class="fa-solid fa-circle-info"></i> Informasi Paket</span>
-                            <p style="font-size: 0.82rem; color: var(--text-muted);">Seluruh merchandise berlogo Universitas Brawijaya resmi dan dibuat dari bahan ramah lingkungan yang awet.</p>
+                            <p style="font-size: 0.82rem; color: var(--text-muted);">Seluruh list yang ada di atas adalah contoh perlengkapan ospek tahun 2025. Nanti kita akan sediakan semua perlengkapan ospek yang sesuai di 2026. Harga yang tertera adalah <strong>DP (Down Payment)</strong>, untuk harga full akan menyusul karena menyesuaikan perlengkapan resmi 2026.</p>
                         </div>
                         
                         <div class="package-footer">
                             <div class="price-box">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: -4px;">Harga DP:</span>
                                 <span class="original-price">Rp 125.000</span>
-                                <span class="actual-price">Rp 99.000</span>
+                                <span class="actual-price" id="pack-kit-price">Rp 99.000</span>
                             </div>
                             <button class="btn btn-secondary" onclick="addPackageToCart('kit')"><i class="fa-solid fa-cart-plus"></i> Ambil Paket A</button>
                         </div>
@@ -200,10 +211,11 @@
                             <h4>Isi Paket (Dapat Semua):</h4>
                             <div class="include-list">
                                 <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kemeja Putih Polos Lengan Panjang (Katun Premium)</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Dasi Hitam Formal Instan (Rapih Instan)</div>
-                                <div class="include-item" id="include-bottoms"><i class="fa-solid fa-circle-check"></i> Celana / Rok Panjang Hitam Bahan Kerja</div>
-                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kaos Kaki Putih Tebal di atas mata kaki (2 Pasang)</div>
-                                <div class="include-item" id="include-shoes"><i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Hitam (Nyaman dipakai seharian)</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Dasi Hitam Formal Instan</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Sabuk Hitam Standar</div>
+                                <div class="include-item" id="include-bottoms-b"><i class="fa-solid fa-circle-check"></i> Celana Hitam / Rok Wiru Hitam</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kaos Kaki Putih Tebal di atas mata kaki</div>
+                                <div class="include-item" id="include-shoes-b"><i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Hitam</div>
                             </div>
                         </div>
 
@@ -246,7 +258,7 @@
                                     </select>
                                 </div>
                                 <div class="select-wrapper">
-                                    <label for="pack-bottoms-size" id="label-bottoms-size">Celana Hitam</label>
+                                    <label for="pack-bottoms-size" id="label-bottoms-size-b">Celana Hitam</label>
                                     <select class="custom-select" id="pack-bottoms-size">
                                         <option value="S">Ukuran S</option>
                                         <option value="M" selected>Ukuran M</option>
@@ -275,10 +287,92 @@
                         
                         <div class="package-footer">
                             <div class="price-box">
-                                <span class="original-price">Rp 245.000</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: -4px;">Harga DP:</span>
+                                <span class="original-price" id="pack-clothing-orig-price">Rp 245.000</span>
                                 <span class="actual-price" id="pack-clothing-price">Rp 189.000</span>
                             </div>
                             <button class="btn btn-secondary" onclick="addPackageToCart('clothing')"><i class="fa-solid fa-cart-plus"></i> Ambil Paket B</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package C: 1 Set Pakaian Tanpa Sepatu -->
+                <div class="package-card" id="pack-clothing-no-shoes-card">
+                    <div class="package-img-wrapper">
+                        <img src="assets/formal_uniforms.png" alt="1 Set Pakaian Formal Tanpa Sepatu">
+                    </div>
+                    <div class="package-card-body">
+                        <h3 class="package-title">Paket C: 1 Set Pakaian (Tanpa Pantofel)</h3>
+                        <p class="package-desc">Set lengkap pakaian formal standar OSPEK UB tanpa sepatu pantofel (kemeja, rok/celana, sabuk, dasi, kaos kaki).</p>
+                        
+                        <div class="package-includes">
+                            <h4>Isi Paket (Dapat Semua):</h4>
+                            <div class="include-list">
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kemeja Putih Polos Lengan Panjang (Katun Premium)</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Dasi Hitam Formal Instan</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Sabuk Hitam Standar</div>
+                                <div class="include-item" id="include-bottoms-c"><i class="fa-solid fa-circle-check"></i> Celana Hitam / Rok Wiru Hitam</div>
+                                <div class="include-item"><i class="fa-solid fa-circle-check"></i> Kaos Kaki Putih Tebal di atas mata kaki</div>
+                            </div>
+                        </div>
+
+                        <!-- Panduan Ukuran (Size Chart) - Toggle -->
+                        <div class="size-chart-toggle" style="margin-top: 12px;">
+                            <button class="btn-size-chart-toggle" onclick="toggleSizeChart('pack-c')" type="button">
+                                <i class="fa-solid fa-ruler"></i> Lihat Panduan Ukuran
+                                <i class="fa-solid fa-chevron-down" id="size-chart-arrow-pack-c"></i>
+                            </button>
+                            <div class="size-chart-panel" id="size-chart-pack-c" style="display: none;">
+                                <div class="size-chart-tabs">
+                                    <button class="size-tab active" onclick="switchSizeTab('pack-c', 'kemeja')" data-tab="kemeja">Kemeja</button>
+                                    <button class="size-tab" onclick="switchSizeTab('pack-c', 'celana')" data-tab="celana">Celana</button>
+                                    <button class="size-tab" onclick="switchSizeTab('pack-c', 'rok')" data-tab="rok">Rok</button>
+                                </div>
+                                <div class="size-chart-table-wrap" id="size-chart-table-pack-c">
+                                    <!-- Diisi oleh JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuration Group for clothing sizes -->
+                        <div class="package-config-group">
+                            <span class="package-config-title"><i class="fa-solid fa-sliders"></i> Sesuaikan Ukuran & Gender</span>
+                            <div class="gender-selectors">
+                                <button class="gender-btn active" id="gender-pria-btn-c" onclick="setPackageGender('pria')"><i class="fa-solid fa-mars"></i> Set Pria</button>
+                                <button class="gender-btn" id="gender-wanita-btn-c" onclick="setPackageGender('wanita')"><i class="fa-solid fa-venus"></i> Set Wanita</button>
+                            </div>
+                            
+                            <div class="size-grid">
+                                <div class="select-wrapper">
+                                    <label for="pack-shirt-size-c">Kemeja</label>
+                                    <select class="custom-select" id="pack-shirt-size-c">
+                                        <option value="S">Ukuran S</option>
+                                        <option value="M" selected>Ukuran M</option>
+                                        <option value="L">Ukuran L</option>
+                                        <option value="XL">Ukuran XL</option>
+                                        <option value="XXL">Ukuran XXL (+Rp 5.000)</option>
+                                    </select>
+                                </div>
+                                <div class="select-wrapper">
+                                    <label for="pack-bottoms-size-c" id="label-bottoms-size-c">Celana Hitam</label>
+                                    <select class="custom-select" id="pack-bottoms-size-c">
+                                        <option value="S">Ukuran S</option>
+                                        <option value="M" selected>Ukuran M</option>
+                                        <option value="L">Ukuran L</option>
+                                        <option value="XL">Ukuran XL</option>
+                                        <option value="XXL">Ukuran XXL (+Rp 5.000)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="price-box">
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: -4px;">Harga DP:</span>
+                                <span class="original-price" id="pack-clothing-ns-orig-price">Rp 150.000</span>
+                                <span class="actual-price" id="pack-clothing-no-shoes-price">Rp 129.000</span>
+                            </div>
+                            <button class="btn btn-secondary" onclick="addPackageToCart('clothing-no-shoes')"><i class="fa-solid fa-cart-plus"></i> Ambil Paket C</button>
                         </div>
                     </div>
                 </div>

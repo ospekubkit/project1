@@ -19,6 +19,8 @@ let productsConfig = {
     kitOriginalPrice: 125000,
     clothingActualPrice: 189000,
     clothingOriginalPrice: 245000,
+    clothingNoShoesActualPrice: 129000,
+    clothingNoShoesOriginalPrice: 150000,
     singleItems: {
         'cat-buku': 15000,
         'cat-pulpen': 5000,
@@ -169,10 +171,11 @@ function renderSizeChart(location, tabName) {
 function initLocalConfigs() {
     // Product Config
     if (localStorage.getItem('ub_products_config')) {
-        productsConfig = JSON.parse(localStorage.getItem('ub_products_config'));
-    } else {
-        localStorage.setItem('ub_products_config', JSON.stringify(productsConfig));
+        let savedConfig = JSON.parse(localStorage.getItem('ub_products_config'));
+        // Migrasi properti baru (misal: clothingNoShoesActualPrice) jika belum ada di localStorage
+        productsConfig = { ...productsConfig, ...savedConfig };
     }
+    localStorage.setItem('ub_products_config', JSON.stringify(productsConfig));
 
     // Sizes Config
     if (localStorage.getItem('ub_sizes_config')) {
@@ -217,6 +220,13 @@ async function applyProductsConfigToDOM() {
     
     const packClothOrig = document.querySelector('#pack-clothing-card .original-price');
     if (packClothOrig) packClothOrig.textContent = formatRupiah(productsConfig.clothingOriginalPrice);
+    
+    // Paket C Prices (No Shoes)
+    const packClothNoShoesActual = document.getElementById('pack-clothing-no-shoes-price');
+    if (packClothNoShoesActual) packClothNoShoesActual.textContent = formatRupiah(productsConfig.clothingNoShoesActualPrice);
+    
+    const packClothNoShoesOrig = document.getElementById('pack-clothing-ns-orig-price');
+    if (packClothNoShoesOrig) packClothNoShoesOrig.textContent = formatRupiah(productsConfig.clothingNoShoesOriginalPrice);
     
     // Single Items - Fetch from Supabase dynamically
     try {
@@ -412,43 +422,66 @@ function switchTab(tabType) {
 
 function setPackageGender(gender) {
     packageGender = gender;
+    
+    // Package B elements
     const btnPria = document.getElementById('gender-pria-btn');
     const btnWanita = document.getElementById('gender-wanita-btn');
-    
-    const bottomsLabel = document.getElementById('label-bottoms-size');
+    const bottomsLabel = document.getElementById('label-bottoms-size-b');
     const bottomsSelect = document.getElementById('pack-bottoms-size');
     const shoesSelect = document.getElementById('pack-shoes-size');
-    
-    const includeBottoms = document.getElementById('include-bottoms');
-    const includeShoes = document.getElementById('include-shoes');
+    const includeBottoms = document.getElementById('include-bottoms-b');
+    const includeShoes = document.getElementById('include-shoes-b');
+
+    // Package C elements
+    const btnPriaC = document.getElementById('gender-pria-btn-c');
+    const btnWanitaC = document.getElementById('gender-wanita-btn-c');
+    const bottomsLabelC = document.getElementById('label-bottoms-size-c');
+    const bottomsSelectC = document.getElementById('pack-bottoms-size-c');
+    const includeBottomsC = document.getElementById('include-bottoms-c');
 
     if (gender === 'pria') {
+        // Toggle Buttons
         if (btnPria) btnPria.classList.add('active');
         if (btnWanita) btnWanita.classList.remove('active');
+        if (btnPriaC) btnPriaC.classList.add('active');
+        if (btnWanitaC) btnWanitaC.classList.remove('active');
         
+        // Package B text & lists
         if (bottomsLabel) bottomsLabel.textContent = 'Celana Hitam';
-        if (includeBottoms) includeBottoms.innerHTML = `<i class="fa-solid fa-circle-check"></i> Celana Panjang Hitam Bahan Kerja`;
-        if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Pria (Kulit Sintetis Premium)`;
+        if (includeBottoms) includeBottoms.innerHTML = `<i class="fa-solid fa-circle-check"></i> Celana Hitam Formal`;
+        if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Pria`;
         
-        if (bottomsSelect) {
-            bottomsSelect.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
-        }
+        // Package C text & lists
+        if (bottomsLabelC) bottomsLabelC.textContent = 'Celana Hitam';
+        if (includeBottomsC) includeBottomsC.innerHTML = `<i class="fa-solid fa-circle-check"></i> Celana Hitam Formal`;
+        
+        // Options updating
+        if (bottomsSelect) bottomsSelect.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
+        if (bottomsSelectC) bottomsSelectC.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         
         if (shoesSelect) {
             shoesSelect.innerHTML = sizesConfig.pantofelPria.map(s => `<option value="${s}">Size ${s}</option>`).join('');
             shoesSelect.value = sizesConfig.pantofelPria.includes('40') ? '40' : sizesConfig.pantofelPria[0];
         }
     } else {
+        // Toggle Buttons
         if (btnPria) btnPria.classList.remove('active');
         if (btnWanita) btnWanita.classList.add('active');
+        if (btnPriaC) btnPriaC.classList.remove('active');
+        if (btnWanitaC) btnWanitaC.classList.add('active');
         
-        if (bottomsLabel) bottomsLabel.textContent = 'Rok Panjang Hitam';
-        if (includeBottoms) includeBottoms.innerHTML = `<i class="fa-solid fa-circle-check"></i> Rok Panjang Span/A-Line Hitam`;
-        if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Wanita Hak 3cm`;
+        // Package B text & lists
+        if (bottomsLabel) bottomsLabel.textContent = 'Rok Wiru Hitam';
+        if (includeBottoms) includeBottoms.innerHTML = `<i class="fa-solid fa-circle-check"></i> Rok Wiru Hitam`;
+        if (includeShoes) includeShoes.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sepatu Pantofel Wanita`;
         
-        if (bottomsSelect) {
-            bottomsSelect.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
-        }
+        // Package C text & lists
+        if (bottomsLabelC) bottomsLabelC.textContent = 'Rok Wiru Hitam';
+        if (includeBottomsC) includeBottomsC.innerHTML = `<i class="fa-solid fa-circle-check"></i> Rok Wiru Hitam`;
+        
+        // Options updating
+        if (bottomsSelect) bottomsSelect.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
+        if (bottomsSelectC) bottomsSelectC.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         
         if (shoesSelect) {
             shoesSelect.innerHTML = sizesConfig.pantofelWanita.map(s => `<option value="${s}">Size ${s}</option>`).join('');
@@ -491,6 +524,25 @@ function addPackageToCart(packType) {
         
         addToCart(id, name, price, size, 'package');
         showToast('Sukses memasukkan Paket B ke keranjang!');
+    }
+    else if (packType === 'clothing-no-shoes') {
+        const id = `package-clothing-ns-${packageGender}`;
+        const genderLabel = packageGender === 'pria' ? 'Pria' : 'Wanita';
+        const name = `Paket C: 1 Set Pakaian Tanpa Pantofel (${genderLabel})`;
+        
+        const shirtSize = document.getElementById('pack-shirt-size-c').value;
+        const bottomsSize = document.getElementById('pack-bottoms-size-c').value;
+        
+        // Extra cost for XXL sizes
+        let extraCost = 0;
+        if (shirtSize === 'XXL') extraCost += 5000;
+        if (bottomsSize === 'XXL') extraCost += 5000;
+        
+        const price = productsConfig.clothingNoShoesActualPrice + extraCost;
+        const size = `Kemeja: ${shirtSize}, Rok/Celana: ${bottomsSize}`;
+        
+        addToCart(id, name, price, size, 'package');
+        showToast('Sukses memasukkan Paket C ke keranjang!');
     }
 }
 

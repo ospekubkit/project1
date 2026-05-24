@@ -1043,7 +1043,7 @@
                                 <input type="number" id="price-kit-orig" class="admin-form-input" min="0" required>
                             </div>
                         </div>
-                        <div class="form-grid" style="margin-bottom: 30px;">
+                        <div class="form-grid" style="margin-bottom: 24px;">
                             <div class="admin-form-group">
                                 <label for="price-clothing-actual">Paket B (Set Pakaian) - Harga Setelah Diskon</label>
                                 <input type="number" id="price-clothing-actual" class="admin-form-input" min="0" required>
@@ -1051,6 +1051,16 @@
                             <div class="admin-form-group">
                                 <label for="price-clothing-orig">Paket B (Set Pakaian) - Harga Coret (Normal)</label>
                                 <input type="number" id="price-clothing-orig" class="admin-form-input" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-bottom: 30px;">
+                            <div class="admin-form-group">
+                                <label for="price-clothing-ns-actual">Paket C (Tanpa Sepatu) - Harga Setelah Diskon</label>
+                                <input type="number" id="price-clothing-ns-actual" class="admin-form-input" min="0" required>
+                            </div>
+                            <div class="admin-form-group">
+                                <label for="price-clothing-ns-orig">Paket C (Tanpa Sepatu) - Harga Coret (Normal)</label>
+                                <input type="number" id="price-clothing-ns-orig" class="admin-form-input" min="0" required>
                             </div>
                         </div>
 
@@ -1679,6 +1689,8 @@
             document.getElementById('price-kit-orig').value = config.kitOriginalPrice;
             document.getElementById('price-clothing-actual').value = config.clothingActualPrice;
             document.getElementById('price-clothing-orig').value = config.clothingOriginalPrice;
+            document.getElementById('price-clothing-ns-actual').value = config.clothingNoShoesActualPrice || 129000;
+            document.getElementById('price-clothing-ns-orig').value = config.clothingNoShoesOriginalPrice || 150000;
 
             try {
                 const { data, error } = await db.from('products').select('*').order('category').order('name');
@@ -1794,8 +1806,18 @@
             const kitOriginalPrice = parseInt(document.getElementById('price-kit-orig').value);
             const clothingActualPrice = parseInt(document.getElementById('price-clothing-actual').value);
             const clothingOriginalPrice = parseInt(document.getElementById('price-clothing-orig').value);
+            const clothingNoShoesActualPrice = parseInt(document.getElementById('price-clothing-ns-actual').value);
+            const clothingNoShoesOriginalPrice = parseInt(document.getElementById('price-clothing-ns-orig').value);
 
-            const updatedProductsConfig = { kitActualPrice, kitOriginalPrice, clothingActualPrice, clothingOriginalPrice, singleItems: {} };
+            const updatedProductsConfig = { 
+                kitActualPrice, 
+                kitOriginalPrice, 
+                clothingActualPrice, 
+                clothingOriginalPrice, 
+                clothingNoShoesActualPrice,
+                clothingNoShoesOriginalPrice,
+                singleItems: {} 
+            };
             localStorage.setItem('ub_products_config', JSON.stringify(updatedProductsConfig));
             showAdminToast('Harga Paket berhasil disimpan!');
         }
