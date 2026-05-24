@@ -207,6 +207,25 @@
                             </div>
                         </div>
 
+                        <!-- Panduan Ukuran (Size Chart) - Toggle -->
+                        <div class="size-chart-toggle" style="margin-top: 12px;">
+                            <button class="btn-size-chart-toggle" onclick="toggleSizeChart('pack')" type="button">
+                                <i class="fa-solid fa-ruler"></i> Lihat Panduan Ukuran
+                                <i class="fa-solid fa-chevron-down" id="size-chart-arrow-pack"></i>
+                            </button>
+                            <div class="size-chart-panel" id="size-chart-pack" style="display: none;">
+                                <div class="size-chart-tabs">
+                                    <button class="size-tab active" onclick="switchSizeTab('pack', 'kemeja')" data-tab="kemeja">Kemeja</button>
+                                    <button class="size-tab" onclick="switchSizeTab('pack', 'celana')" data-tab="celana">Celana</button>
+                                    <button class="size-tab" onclick="switchSizeTab('pack', 'rok')" data-tab="rok">Rok</button>
+                                    <button class="size-tab" onclick="switchSizeTab('pack', 'pantofel')" data-tab="pantofel">Pantofel</button>
+                                </div>
+                                <div class="size-chart-table-wrap" id="size-chart-table-pack">
+                                    <!-- Diisi oleh JS -->
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Configuration Group for clothing sizes -->
                         <div class="package-config-group">
                             <span class="package-config-title"><i class="fa-solid fa-sliders"></i> Sesuaikan Ukuran & Gender</span>
@@ -284,6 +303,26 @@
                         <!-- Category 2: Pakaian Formal (Loaded dynamically from Supabase) -->
                         <div class="category-block">
                             <h3><i class="fa-solid fa-shirt"></i> Kategori B: Pakaian Formal &amp; Sepatu</h3>
+                            
+                            <!-- Panduan Ukuran untuk Satuan -->
+                            <div class="size-chart-toggle" style="margin-bottom: 12px;">
+                                <button class="btn-size-chart-toggle" onclick="toggleSizeChart('satuan')" type="button">
+                                    <i class="fa-solid fa-ruler"></i> Lihat Panduan Ukuran
+                                    <i class="fa-solid fa-chevron-down" id="size-chart-arrow-satuan"></i>
+                                </button>
+                                <div class="size-chart-panel" id="size-chart-satuan" style="display: none;">
+                                    <div class="size-chart-tabs">
+                                        <button class="size-tab active" onclick="switchSizeTab('satuan', 'kemeja')" data-tab="kemeja">Kemeja</button>
+                                        <button class="size-tab" onclick="switchSizeTab('satuan', 'celana')" data-tab="celana">Celana</button>
+                                        <button class="size-tab" onclick="switchSizeTab('satuan', 'rok')" data-tab="rok">Rok</button>
+                                        <button class="size-tab" onclick="switchSizeTab('satuan', 'pantofel')" data-tab="pantofel">Pantofel</button>
+                                    </div>
+                                    <div class="size-chart-table-wrap" id="size-chart-table-satuan">
+                                        <!-- Diisi oleh JS -->
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="items-grid" id="category-clothing-grid">
                                 <div style="color: var(--text-muted); padding: 20px; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat produk...</div>
                             </div>

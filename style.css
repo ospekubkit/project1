@@ -1872,3 +1872,141 @@ footer {
         padding: 15px;
     }
 }
+
+/* ==========================================================================
+   SIZE CHART (Panduan Ukuran) STYLES
+   ========================================================================== */
+
+.size-chart-toggle {
+    width: 100%;
+}
+
+.btn-size-chart-toggle {
+    width: 100%;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px dashed rgba(212, 175, 55, 0.4);
+    color: var(--accent);
+    padding: 10px 16px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-size-chart-toggle:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--accent);
+}
+
+.btn-size-chart-toggle i:last-child {
+    transition: transform 0.3s ease;
+    font-size: 0.75rem;
+}
+
+.size-chart-panel {
+    margin-top: 10px;
+    background: rgba(4, 33, 37, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    animation: fadeSlideDown 0.3s ease;
+}
+
+@keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.size-chart-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.size-tab {
+    flex: 1;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+    border-bottom: 2px solid transparent;
+}
+
+.size-tab:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.size-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.size-chart-table-wrap {
+    padding: 12px;
+    overflow-x: auto;
+}
+
+.size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    color: white;
+}
+
+.size-chart-table thead th {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--accent);
+    padding: 8px 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.size-chart-table tbody td {
+    padding: 8px 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.size-chart-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.size-chart-table td.size-label {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+@media (max-width: 768px) {
+    .size-chart-tabs {
+        flex-wrap: wrap;
+    }
+    .size-tab {
+        flex: 1 1 50%;
+        font-size: 0.72rem;
+    }
+    .size-chart-table {
+        font-size: 0.72rem;
+    }
+    .size-chart-table thead th,
+    .size-chart-table tbody td {
+        padding: 6px 8px;
+    }
+}

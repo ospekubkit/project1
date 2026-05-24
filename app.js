@@ -54,7 +54,116 @@ let sizesConfig = {
     pantofelWanita: ['36', '37', '38', '39', '40']
 };
 
+// 4. Size Chart Data (Tabel Panduan Ukuran dengan CM - bisa diedit di Admin)
+let sizeChartData = {
+    kemeja: {
+        headers: ['Ukuran', 'Lebar Dada (cm)', 'Panjang Badan (cm)', 'Panjang Lengan (cm)'],
+        rows: [
+            ['S', '49', '68', '55'],
+            ['M', '52', '70', '57'],
+            ['L', '55', '72', '59'],
+            ['XL', '58', '74', '61'],
+            ['XXL', '62', '76', '63']
+        ]
+    },
+    celana: {
+        headers: ['Ukuran', 'Lingkar Pinggang (cm)', 'Panjang Celana (cm)', 'Lingkar Paha (cm)'],
+        rows: [
+            ['S', '68-72', '98', '52'],
+            ['M', '72-76', '100', '54'],
+            ['L', '76-82', '102', '56'],
+            ['XL', '82-88', '104', '58'],
+            ['XXL', '88-94', '106', '62']
+        ]
+    },
+    rok: {
+        headers: ['Ukuran', 'Lingkar Pinggang (cm)', 'Panjang Rok (cm)', 'Lingkar Pinggul (cm)'],
+        rows: [
+            ['S', '62-66', '90', '86'],
+            ['M', '66-70', '92', '90'],
+            ['L', '70-76', '94', '94'],
+            ['XL', '76-82', '96', '98'],
+            ['XXL', '82-88', '98', '102']
+        ]
+    },
+    pantofel: {
+        headers: ['Ukuran', 'Panjang Kaki (cm)', 'Keterangan'],
+        rows: [
+            ['36', '23.0', 'Wanita'],
+            ['37', '23.5', 'Wanita'],
+            ['38', '24.0', 'Pria / Wanita'],
+            ['39', '24.5', 'Pria / Wanita'],
+            ['40', '25.0', 'Pria / Wanita'],
+            ['41', '25.5', 'Pria'],
+            ['42', '26.0', 'Pria'],
+            ['43', '26.5', 'Pria'],
+            ['44', '27.0', 'Pria'],
+            ['45', '27.5', 'Pria']
+        ]
+    }
+};
+
 let referralDiscount = 0; // Added for task 3
+
+// ==========================================================================
+// SIZE CHART TOGGLE & TAB FUNCTIONS
+// ==========================================================================
+
+function toggleSizeChart(location) {
+    const panel = document.getElementById(`size-chart-${location}`);
+    const arrow = document.getElementById(`size-chart-arrow-${location}`);
+    if (!panel) return;
+
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+        // Render default tab (kemeja)
+        renderSizeChart(location, 'kemeja');
+    } else {
+        panel.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+function switchSizeTab(location, tabName) {
+    // Update active tab button
+    const panel = document.getElementById(`size-chart-${location}`);
+    if (!panel) return;
+    const tabs = panel.querySelectorAll('.size-tab');
+    tabs.forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-tab') === tabName);
+    });
+    renderSizeChart(location, tabName);
+}
+
+function renderSizeChart(location, tabName) {
+    const wrap = document.getElementById(`size-chart-table-${location}`);
+    if (!wrap) return;
+
+    // Load from localStorage if available
+    if (localStorage.getItem('ub_size_chart_data')) {
+        sizeChartData = JSON.parse(localStorage.getItem('ub_size_chart_data'));
+    }
+
+    const chart = sizeChartData[tabName];
+    if (!chart) {
+        wrap.innerHTML = '<p style="color: var(--text-muted); padding: 10px;">Data belum tersedia.</p>';
+        return;
+    }
+
+    let html = '<table class="size-chart-table"><thead><tr>';
+    chart.headers.forEach(h => { html += `<th>${h}</th>`; });
+    html += '</tr></thead><tbody>';
+    chart.rows.forEach(row => {
+        html += '<tr>';
+        row.forEach((cell, i) => {
+            html += i === 0 ? `<td class="size-label">${cell}</td>` : `<td>${cell}</td>`;
+        });
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+}
 
 // Initialize Configs from localStorage
 function initLocalConfigs() {
@@ -70,6 +179,13 @@ function initLocalConfigs() {
         sizesConfig = JSON.parse(localStorage.getItem('ub_sizes_config'));
     } else {
         localStorage.setItem('ub_sizes_config', JSON.stringify(sizesConfig));
+    }
+
+    // Size Chart Data (Tabel Panduan Ukuran)
+    if (localStorage.getItem('ub_size_chart_data')) {
+        sizeChartData = JSON.parse(localStorage.getItem('ub_size_chart_data'));
+    } else {
+        localStorage.setItem('ub_size_chart_data', JSON.stringify(sizeChartData));
     }
 
     // Batch Config
