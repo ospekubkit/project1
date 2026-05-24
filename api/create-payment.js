@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
     const clientId = process.env.DOKU_CLIENT_ID; // Merchant ID
     const secretKey = process.env.DOKU_SECRET_KEY;
-    const baseUrl = 'https://api.doku.com';
+    const baseUrl = 'https://api-sandbox.doku.com';
     const path = '/checkout/v1/payment';
     const appUrl = 'https://project1-eight-kohl.vercel.app';
 
