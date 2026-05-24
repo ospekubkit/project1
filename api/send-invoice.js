@@ -46,7 +46,7 @@ export default async function handler(req, res) {
 
     // 3. Kirim Email via Resend
     const { data: emailData, error: emailError } = await resend.emails.send({
-      from: 'OspekUB.kit <noreply@ospekubkit.com>', // Ubah sesuai domain verified di Resend
+      from: 'OspekUB.kit <onboarding@resend.dev>', // Harus pakai ini jika domain belum diverifikasi di Resend
       to: [order.email],
       subject: `INVOICE LUNAS - Pesanan Pre-Order #${order.id}`,
       html: `
