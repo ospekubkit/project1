@@ -652,19 +652,17 @@ function showToast(message) {
 }
 
 // ==========================================================================
-// 5. MANUAL QRIS CONVERTER & WEBHOOK DISABLED
+// 5. DOKU PAYMENT GATEWAY INTEGRATION (PRODUCTION)
 // ==========================================================================
 
 function triggerCheckout(event) {
     event.preventDefault();
     
-    // Check if cart is empty
     if (cart.length === 0) {
         alert('Keranjang pesanan kamu masih kosong! Silakan tambahkan paket atau item satuan terlebih dahulu.');
         return;
     }
     
-    // Konfirmasi Email
     const emailVal = document.getElementById('email-address').value;
     if (!confirm(`Apakah alamat email ini sudah benar?\n\n${emailVal}\n\nInvoice pesanan dan tanda bukti lunas akan dikirimkan secara otomatis ke email ini. Jika salah ketik, mohon perbaiki terlebih dahulu.`)) {
         return;
@@ -678,7 +676,7 @@ async function validateReferralAndProceed() {
     const refStatus = document.getElementById('referral-status');
     const refCode = refInput ? refInput.value.trim().toUpperCase() : '';
     
-    referralDiscount = 0; // Reset discount initially
+    referralDiscount = 0;
 
     if (refCode) {
         if (refStatus) {
@@ -693,7 +691,7 @@ async function validateReferralAndProceed() {
                     refStatus.textContent = 'Kode referral tidak valid atau tidak tersedia.';
                     refStatus.style.color = '#e74c3c';
                 }
-                return; // Stop checkout
+                return;
             }
             if (refStatus) {
                 refStatus.textContent = 'Kode referral valid! (Diskon Rp 10.000)';
@@ -709,171 +707,119 @@ async function validateReferralAndProceed() {
         }
     }
     
-    // Update the UI immediately to reflect the discount before opening modal
     updateCartUI();
-    
-    openQrisModal();
+    initiateDokuPayment();
 }
 
-function openQrisModal() {
-    const overlay = document.getElementById('qris-modal-overlay');
-    const modalScan = document.getElementById('modal-qris-scan');
-    const modalSuccess = document.getElementById('modal-qris-success');
+async function initiateDokuPayment() {
+    // Show loading overlay
+    showDokuLoading(true);
     
-    overlay.classList.add('active');
-    modalScan.style.display = 'block';
-    modalSuccess.style.display = 'none';
-    
-    let total = 0;
-    cart.forEach(item => {
-        total += (item.price * item.quantity);
-    });
-    total = total + 1000 - referralDiscount;
-    
-    document.getElementById('qris-amount-display').textContent = formatRupiah(total);
-    
-    // Start countdown timer for QRIS modal (15 minutes)
-    startQrisTimer(15 * 60);
-    
-    // NO MORE AUTOMATIC SUCCESS TIMEOUT!
-    // Status is purely manual QRIS flow as requested by USER.
-}
-
-function closeQrisModal() {
-    document.getElementById('qris-modal-overlay').classList.remove('active');
-    clearInterval(qrisTimerInterval);
-}
-
-function startQrisTimer(durationSeconds) {
-    const timerDisplay = document.getElementById('qris-timer');
-    let timer = durationSeconds;
-    
-    clearInterval(qrisTimerInterval);
-    
-    qrisTimerInterval = setInterval(() => {
-        let minutes = Math.floor(timer / 60);
-        let seconds = timer % 60;
-        
-        minutes = minutes.toString().padStart(2, '0');
-        seconds = seconds.toString().padStart(2, '0');
-        
-        if (timerDisplay) timerDisplay.textContent = `${minutes}:${seconds}`;
-        
-        if (--timer < 0) {
-            clearInterval(qrisTimerInterval);
-            if (timerDisplay) timerDisplay.textContent = 'EXPIRED';
-            alert('Waktu pembayaran QRIS telah habis. Silakan checkout ulang.');
-            closeQrisModal();
-        }
-    }, 1000);
-}
-
-async function simulatePaymentSuccess() {
-    const proofInput = document.getElementById('payment-proof');
-    if (!proofInput || !proofInput.files || proofInput.files.length === 0) {
-        alert("Harap upload bukti transfer terlebih dahulu!");
-        return;
-    }
-
-    clearInterval(qrisTimerInterval);
-    
-    // Tampilkan state loading
-    const btnSubmit = document.querySelector('button[onclick="simulatePaymentSuccess()"]');
-    const originalText = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan pesanan & mengupload bukti...';
-    btnSubmit.disabled = true;
-
-    // Simulate upload delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Generate simulated unique order ID
-    const randomOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
-    
-    // Populate Data
     const nameVal = document.getElementById('full-name').value;
     const waVal = document.getElementById('whatsapp-number').value;
     const emailVal = document.getElementById('email-address').value;
     
     let total = 0;
     cart.forEach(item => total += (item.price * item.quantity));
-    total = total + 1000 - referralDiscount; // Include admin fee and discount
+    total = total + 1000 - referralDiscount;
 
-    // Deteksi Affiliate Code dari URL
+    const randomOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
     const urlParams = new URLSearchParams(window.location.search);
-    const affiliateCode = urlParams.get('ref') || null;
+    const affiliateCode = urlParams.get('ref') || (document.getElementById('referral-code')?.value.trim().toUpperCase() || null);
 
-    // PERSIST ORDER TO SUPABASE
     try {
-        const { error } = await db.from('orders').insert([{
+        const response = await fetch('/api/create-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                orderId: randomOrderId,
+                amount: total,
+                customerName: nameVal,
+                email: emailVal,
+                phone: waVal,
+                items: cart.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    size: item.size
+                })),
+                affiliateCode: affiliateCode
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.payment_url) {
+            showDokuLoading(false);
+            const errMsg = result.error?.message || result.error || JSON.stringify(result);
+            alert('Gagal membuat transaksi pembayaran: ' + errMsg + '\n\nCoba ulangi atau hubungi admin.');
+            return;
+        }
+
+        // Simpan ke localStorage untuk referensi
+        const orderData = {
             id: randomOrderId,
+            date: new Date().toLocaleString('id-ID'),
             name: nameVal,
             whatsapp: waVal,
             email: emailVal,
-            items: cart.map(item => ({
-                name: item.name,
-                quantity: item.quantity,
-                size: item.size,
-                price: item.price
-            })),
+            items: cart,
             total: total,
-            status: 'Menunggu Verifikasi',
-            affiliate_code: affiliateCode
-        }]);
-
-        if (error) throw error;
-        
-        // Catat klik/konversi sukses di tabel affiliate jika ada
-        if (affiliateCode) {
-            // (Note: Supabase client-side update rls bisa direstrict, 
-            // idealnya menggunakan Vercel function, 
-            // tapi ini untuk contoh awal yg diizinkan update public)
-            // Di sini kita tidak melakukan count increment agar aman sementara,
-            // nanti dihitung otomatis via dashboard admin.
+            status: 'Menunggu Pembayaran'
+        };
+        let orders = [];
+        if (localStorage.getItem('ub_orders')) {
+            orders = JSON.parse(localStorage.getItem('ub_orders'));
         }
+        orders.unshift(orderData);
+        localStorage.setItem('ub_orders', JSON.stringify(orders));
+
+        // Reset cart
+        cart = [];
+        updateCartUI();
+
+        // Redirect ke halaman pembayaran Doku
+        showDokuLoading(false);
+        window.location.href = result.payment_url;
 
     } catch (err) {
-        alert('Gagal menyimpan pesanan ke server: ' + err.message);
-        btnSubmit.innerHTML = originalText;
-        btnSubmit.disabled = false;
-        return; // Stop eksekusi
+        showDokuLoading(false);
+        alert('Terjadi kesalahan jaringan: ' + err.message);
     }
-    
-    // Switch modal screens
-    document.getElementById('modal-qris-scan').style.display = 'none';
-    const modalSuccess = document.getElementById('modal-qris-success');
-    if (modalSuccess) {
-        modalSuccess.style.display = 'block';
-        const successScreen = modalSuccess.querySelector('.success-screen');
-        if (successScreen) successScreen.classList.add('active');
-    }
-    
-    document.getElementById('receipt-order-id').textContent = randomOrderId;
-    document.getElementById('receipt-name').textContent = nameVal;
-    
-    const receiptTotalEl = document.getElementById('receipt-total');
-    if(receiptTotalEl) receiptTotalEl.textContent = formatRupiah(total);
+}
 
-    // Tetap simpan ke local storage hanya untuk reference browser saat itu
-    const orderData = {
-        id: randomOrderId,
-        date: new Date().toLocaleString('id-ID'),
-        name: nameVal,
-        whatsapp: waVal,
-        email: emailVal,
-        items: cart,
-        total: total,
-        status: 'Menunggu Verifikasi'
-    };
-    let orders = [];
-    if (localStorage.getItem('ub_orders')) {
-        orders = JSON.parse(localStorage.getItem('ub_orders'));
+function showDokuLoading(show) {
+    let overlay = document.getElementById('doku-loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'doku-loading-overlay';
+        overlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 22, 24, 0.92); backdrop-filter: blur(8px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; color: white; font-family: 'Poppins', sans-serif;
+        `;
+        overlay.innerHTML = `
+            <div style="text-align: center;">
+                <div style="width:70px;height:70px;border:4px solid rgba(212,175,55,0.3);border-top-color:#D4AF37;
+                    border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
+                <h3 style="font-family:'Montserrat',sans-serif;font-size:1.4rem;color:#D4AF37;margin-bottom:8px;">
+                    Memproses Pesanan...
+                </h3>
+                <p style="opacity:0.7;font-size:0.9rem;">Harap tunggu, kamu akan segera diarahkan ke halaman pembayaran.</p>
+                <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+            </div>
+        `;
+        document.body.appendChild(overlay);
     }
-    orders.unshift(orderData);
-    localStorage.setItem('ub_orders', JSON.stringify(orders));
+    overlay.style.display = show ? 'flex' : 'none';
+}
 
-    // Reset shopping cart locally upon registration
-    cart = [];
-    updateCartUI();
+// Fungsi closeQrisModal tetap ada untuk kompatibilitas (modal sudah diganti Doku)
+function closeQrisModal() {
+    const overlay = document.getElementById('qris-modal-overlay');
+    if (overlay) overlay.classList.remove('active');
+    clearInterval(qrisTimerInterval);
 }
 
 // ==========================================================================

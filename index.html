@@ -408,7 +408,7 @@
                             <label for="agree-terms">Saya menyetujui bahwa pesanan pre-order ini tidak dapat dibatalkan secara sepihak dan ukuran pakaian/sepatu yang saya pilih sudah benar sesuai tabel panduan.</label>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-full-width" style="margin-top: 30px; font-size: 1.1rem; padding: 16px;"><i class="fa-solid fa-qrcode"></i> Bayar Sekarang (Simulasi QRIS)</button>
+                        <button type="submit" class="btn btn-primary btn-full-width" style="margin-top: 30px; font-size: 1.1rem; padding: 16px;"><i class="fa-solid fa-credit-card"></i> Lanjutkan ke Pembayaran</button>
                     </form>
                 </div>
 
@@ -447,90 +447,10 @@
         </div>
     </section>
 
-    <!-- ==========================================================================
-       QRIS SIMULATOR MODAL DIALOG
-       ========================================================================== -->
+    <!-- QRIS/Doku Modal overlay (unused, kept for compatibility) -->
     <div class="modal-overlay" id="qris-modal-overlay">
-        <!-- Dialog View 1: Scan QRIS -->
-        <div class="qris-modal" id="modal-qris-scan">
-            <div class="qris-modal-header">
-                <h3>
-                    <i class="fa-solid fa-qrcode" style="font-size: 1.4rem; color: var(--accent);"></i>
-                    <span>PEMBAYARAN QRIS MANUAL</span>
-                </h3>
-                <button class="close-modal-btn" onclick="closeQrisModal()">&times;</button>
-            </div>
-            
-            <div class="qris-modal-body">
-                <div class="qris-timer-box">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>Sisa Waktu Pembayaran: <strong id="qris-timer">15:00</strong></span>
-                </div>
-                
-                <span class="qris-amount-title">Total Nominal Transfer</span>
-                <span class="qris-amount-value" id="qris-amount-display">Rp 189.000</span>
-                
-                <div class="qris-code-container">
-                    <img src="assets/qris.jpeg" alt="QRIS Payment" class="qris-qr-image" style="width: 100%; border-radius: 12px; border: 2px solid var(--border-color);">
-                    <div class="qris-logo-accent">QRIS</div>
-                </div>
-                
-                <p class="qris-instructions">Silakan scan QRIS di atas menggunakan GoPay, OVO, DANA, BCA Mobile, ShopeePay, atau Mobile Banking lainnya. <strong>Wajib mengirim bukti transfer setelah melakukan pembayaran.</strong></p>
-                
-                <div class="qris-status-box" style="background-color: var(--accent-light); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 12px;">
-                    <i class="fa-solid fa-circle-info" style="color: var(--accent); margin-right: 8px;"></i>
-                    <span style="font-size: 0.85rem; color: var(--primary); font-weight: 500;">Setelah transfer selesai, silakan klik tombol konfirmasi di bawah.</span>
-                </div>
-                
-                <div class="qris-upload-section" style="margin-top: 15px; text-align: left;">
-                    <label style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; display: block;">Upload Bukti Transfer (Wajib)</label>
-                    <input type="file" id="payment-proof" accept="image/*" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px dashed var(--accent); padding: 10px; border-radius: 8px; color: white; margin-bottom: 12px;">
-                </div>
-                <!-- Main manual submit button -->
-                <button class="btn btn-primary btn-full-width" style="margin-top: 5px; background: #2ecc71; border-color: #27ae60;" onclick="simulatePaymentSuccess()">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.2rem; margin-right: 8px;"></i> Kirim Bukti & Konfirmasi
-                </button>
-            </div>
-        </div>
-        
-        <!-- Dialog View 2: Success Confirmation & Invoice -->
-        <div class="qris-modal" id="modal-qris-success" style="display: none;">
-            <div class="success-screen id-active-screen">
-                <div class="success-icon-wrapper" style="background-color: var(--accent); color: var(--primary);">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                </div>
-                <h3 class="success-title">Pemesanan Dicatat!</h3>
-                <p class="success-desc">Selamat kamu udah ngamanin perlengkapan ospek mu! Tunggu invoice yang bakal dikirim admin lewat email ya ketika transaksimu berhasil di verfikasi.</p>
-                
-                <div class="receipt-card">
-                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; font-weight: 700; color: var(--primary);">
-                        <i class="fa-solid fa-receipt"></i> INVOICE PRE-ORDER #<span id="receipt-order-id">UB-491295</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span>Nama Pemesan:</span>
-                        <strong id="receipt-name">Mochammad Rafly</strong>
-                    </div>
-
-                    <div class="receipt-row">
-                        <span>Metode Bayar:</span>
-                        <span>QRIS Manual (Konfirmasi WA)</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span>Status Pesanan:</span>
-                        <strong style="color: var(--accent); font-weight: 600;" id="receipt-status"><i class="fa-solid fa-user-clock"></i> Menunggu Verifikasi</strong>
-                    </div>
-                    <div class="receipt-row total">
-                        <span>Total Pembayaran:</span>
-                        <span id="receipt-total" style="color: var(--primary);">Rp 189.000</span>
-                    </div>
-                </div>
-                
-                <div class="success-actions">
-                    <button class="btn btn-secondary" onclick="downloadReceipt()"><i class="fa-solid fa-download"></i> Unduh Tanda Terima (.TXT)</button>
-                    <button class="btn btn-outline" style="color: var(--primary); border-color: var(--border-color);" onclick="closeQrisModal()"><i class="fa-solid fa-circle-xmark"></i> Selesai & Tutup</button>
-                </div>
-            </div>
-        </div>
+        <div class="qris-modal" id="modal-qris-scan" style="display:none;"></div>
+        <div class="qris-modal" id="modal-qris-success" style="display:none;"></div>
     </div>
 
     <!-- ==========================================================================
@@ -576,7 +496,7 @@
                 <div style="display: flex; gap: 16px;">
                     <span>S&K Berlaku</span>
                     <span>Kebijakan Privasi</span>
-                    <span>Pembayaran QRIS Aman</span>
+                    <span>Pembayaran Aman via Doku</span>
                 </div>
             </div>
         </div>
