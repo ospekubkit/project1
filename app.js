@@ -242,19 +242,23 @@ async function applyProductsConfigToDOM() {
             card.setAttribute('data-id', prod.id);
             
             // Check if clothing needs size selector
-            let hasSize = ['single-shirt', 'single-pants', 'single-skirt', 'single-pantofel-pria', 'single-pantofel-wanita'].includes(prod.id);
+            const prodName = prod.name.toLowerCase();
+            let hasSize = prodName.includes('kemeja') || prodName.includes('celana') || prodName.includes('rok') || prodName.includes('pantofel') || prodName.includes('baju');
             
             let sizeOptions = '';
             if (hasSize) {
-                if (prod.id.includes('pantofel')) {
-                    if (prod.id.includes('wanita')) {
+                if (prodName.includes('pantofel')) {
+                    if (prodName.includes('wanita')) {
                         sizeOptions = sizesConfig.pantofelWanita.map(s => `<option value="${s}">${s}</option>`).join('');
+                    } else if (prodName.includes('pria')) {
+                        sizeOptions = sizesConfig.pantofelPria.map(s => `<option value="${s}">${s}</option>`).join('');
                     } else {
+                        // Jika tidak spesifik pria/wanita, gabungkan size atau default ke pria
                         sizeOptions = sizesConfig.pantofelPria.map(s => `<option value="${s}">${s}</option>`).join('');
                     }
-                } else if (prod.id.includes('skirt')) {
+                } else if (prodName.includes('rok')) {
                     sizeOptions = sizesConfig.rok.map(s => `<option value="${s}">${s}</option>`).join('');
-                } else if (prod.id.includes('pants') || prod.id.includes('celana')) {
+                } else if (prodName.includes('celana') || prodName.includes('pants')) {
                     sizeOptions = sizesConfig.celana.map(s => `<option value="${s}">${s}</option>`).join('');
                 } else {
                     sizeOptions = sizesConfig.kemeja.map(s => `<option value="${s}">${s}</option>`).join('');

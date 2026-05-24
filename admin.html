@@ -839,7 +839,12 @@
                 </li>
                 <li class="nav-item" id="nav-item-sizes">
                     <button onclick="switchAdminTab('sizes')">
-                        <i class="fa-solid fa-ruler"></i> Konfigurasi Ukuran
+                        <i class="fa-solid fa-ruler"></i> Pilihan Ukuran
+                    </button>
+                </li>
+                <li class="nav-item" id="nav-item-sizechart">
+                    <button onclick="switchAdminTab('sizechart')">
+                        <i class="fa-solid fa-table"></i> Tabel Panduan (CM)
                     </button>
                 </li>
             </ul>
@@ -1144,6 +1149,53 @@
 
             </div>
 
+            <!-- ==========================================================================
+               VIEW 7: SIZE CHART MANAGER
+               ========================================================================== -->
+            <div class="admin-view" id="view-sizechart" style="display: none;">
+                
+                <div class="panel-card">
+                    <h3><i class="fa-solid fa-table"></i> Tabel Panduan Ukuran (CM)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 24px;">Atur data tabel panduan ukuran. Format penulisan: Setiap baris mewakili satu ukuran. Gunakan koma untuk memisahkan kolom data.</p>
+                    
+                    <form onsubmit="handleSaveSizeChart(event)">
+                        
+                        <!-- Kemeja -->
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="color: var(--accent); margin-bottom: 10px;">👕 Kemeja</h4>
+                            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 8px;">Kolom: Ukuran, Lebar Dada (cm), Panjang Badan (cm), Panjang Lengan (cm)</p>
+                            <textarea id="chart-data-kemeja" rows="5" class="admin-form-input" style="font-family: monospace; height: auto;" required></textarea>
+                        </div>
+
+                        <!-- Celana -->
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="color: var(--accent); margin-bottom: 10px;">👖 Celana</h4>
+                            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 8px;">Kolom: Ukuran, Lingkar Pinggang (cm), Panjang Celana (cm), Lingkar Paha (cm)</p>
+                            <textarea id="chart-data-celana" rows="5" class="admin-form-input" style="font-family: monospace; height: auto;" required></textarea>
+                        </div>
+
+                        <!-- Rok -->
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="color: var(--accent); margin-bottom: 10px;">👗 Rok</h4>
+                            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 8px;">Kolom: Ukuran, Lingkar Pinggang (cm), Panjang Rok (cm), Lingkar Pinggul (cm)</p>
+                            <textarea id="chart-data-rok" rows="5" class="admin-form-input" style="font-family: monospace; height: auto;" required></textarea>
+                        </div>
+
+                        <!-- Pantofel -->
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="color: var(--accent); margin-bottom: 10px;">👞 Sepatu Pantofel</h4>
+                            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 8px;">Kolom: Ukuran, Panjang Kaki (cm), Keterangan (Pria/Wanita)</p>
+                            <textarea id="chart-data-pantofel" rows="10" class="admin-form-input" style="font-family: monospace; height: auto;" required></textarea>
+                        </div>
+
+                        <div style="display:flex; justify-content: flex-end; margin-top: 20px;">
+                            <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Simpan Tabel Panduan</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
         </main>
 
     </div>
@@ -1243,6 +1295,7 @@
             loadOrdersData();
             loadBatchConfigInputs();
             loadProductsFromDB();
+            loadSizeChartInputs();
         }
 
         function handleLogout() {
@@ -1806,6 +1859,59 @@
             if (error) { alert('Gagal menghapus: ' + error.message); return; }
             showAdminToast(`Kode ${code} berhasil dihapus!`);
             loadAffiliates();
+        }
+
+        // ==========================================================================
+        // 7. SIZE CHART MANAGER
+        // ==========================================================================
+        
+        // Helper to format array into CSV string
+        function rowsToCsv(rows) {
+            return rows.map(r => r.join(', ')).join('\n');
+        }
+
+        // Helper to parse CSV string into array of arrays
+        function csvToRows(csv) {
+            return csv.split('\n')
+                      .map(line => line.trim())
+                      .filter(line => line.length > 0)
+                      .map(line => line.split(',').map(item => item.trim()));
+        }
+
+        function loadSizeChartInputs() {
+            let chartData = localStorage.getItem('ub_size_chart_data');
+            if (chartData) {
+                try {
+                    chartData = JSON.parse(chartData);
+                    document.getElementById('chart-data-kemeja').value = rowsToCsv(chartData.kemeja.rows);
+                    document.getElementById('chart-data-celana').value = rowsToCsv(chartData.celana.rows);
+                    document.getElementById('chart-data-rok').value = rowsToCsv(chartData.rok.rows);
+                    document.getElementById('chart-data-pantofel').value = rowsToCsv(chartData.pantofel.rows);
+                } catch (e) {
+                    console.error("Gagal parse size chart data", e);
+                }
+            }
+        }
+
+        function handleSaveSizeChart(event) {
+            event.preventDefault();
+            
+            // Retrieve existing configuration to preserve headers
+            let chartData = localStorage.getItem('ub_size_chart_data');
+            if (!chartData) {
+                showAdminToast("Gagal: Data ukuran default belum ada. Buka halaman utama terlebih dahulu.");
+                return;
+            }
+            chartData = JSON.parse(chartData);
+
+            // Update rows from textareas
+            chartData.kemeja.rows = csvToRows(document.getElementById('chart-data-kemeja').value);
+            chartData.celana.rows = csvToRows(document.getElementById('chart-data-celana').value);
+            chartData.rok.rows = csvToRows(document.getElementById('chart-data-rok').value);
+            chartData.pantofel.rows = csvToRows(document.getElementById('chart-data-pantofel').value);
+
+            localStorage.setItem('ub_size_chart_data', JSON.stringify(chartData));
+            showAdminToast("Tabel Panduan Ukuran berhasil disimpan!");
         }
 
         // ==========================================================================
