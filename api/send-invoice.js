@@ -1,7 +1,5 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { createClient } from '@supabase/supabase-js';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY // Pakai secret key agar punya hak admin
@@ -44,10 +42,18 @@ export default async function handler(req, res) {
     }
     itemsHtml += '</ul>';
 
-    // 3. Kirim Email via Resend
-    const { data: emailData, error: emailError } = await resend.emails.send({
-      from: 'OspekUB.kit <onboarding@resend.dev>', // Harus pakai ini jika domain belum diverifikasi di Resend
-      to: [order.email],
+    // 3. Konfigurasi Nodemailer Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+      }
+    });
+
+    const mailOptions = {
+      from: `"OspekUB.kit" <${process.env.GMAIL_USER}>`,
+      to: order.email,
       subject: `INVOICE LUNAS - Pesanan Pre-Order #${order.id}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
@@ -57,8 +63,8 @@ export default async function handler(req, res) {
           
           <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #042125;">Detail Pesanan #${order.id}</h3>
-            <p><strong>NIM:</strong> ${order.nim}</p>
-            <p><strong>Fakultas:</strong> ${order.faculty} - ${order.department}</p>
+            <p><strong>NIM:</strong> ${order.nim || '-'}</p>
+            <p><strong>Fakultas:</strong> ${order.faculty || '-'} - ${order.department || '-'}</p>
             
             <h4>Barang yang dipesan:</h4>
             ${itemsHtml}
@@ -75,13 +81,11 @@ export default async function handler(req, res) {
           </p>
         </div>
       `
-    });
+    };
 
-    if (emailError) {
-      throw emailError;
-    }
+    const info = await transporter.sendMail(mailOptions);
 
-    return res.status(200).json({ success: true, message: 'Invoice sent successfully', emailId: emailData.id });
+    return res.status(200).json({ success: true, message: 'Invoice sent successfully', messageId: info.messageId });
 
   } catch (err) {
     console.error('Error sending invoice:', err);
