@@ -29,11 +29,13 @@ export default async function handler(req, res) {
     const requestBody = {
         order: {
             invoice_number: orderId,
-            line_items: items.map(item => ({
-                name: item.name.substring(0, 50),
-                price: item.price,
-                quantity: item.quantity
-            })),
+            line_items: [
+                {
+                    name: 'Pembayaran Pre-Order OSPEK UB 2026',
+                    price: amount,
+                    quantity: 1
+                }
+            ],
             amount: amount,
             currency: 'IDR',
             callback_url: `${appUrl}/payment-success.html?order=${orderId}`,
