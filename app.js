@@ -555,7 +555,7 @@ function addPackageToCart(packType) {
 
 // Add Single Merchandise Items (No Sizes)
 function addSingleToCart(id, name, fallbackPrice, size) {
-    const finalPrice = productsConfig.singleItems[id] !== undefined ? productsConfig.singleItems[id] : fallbackPrice;
+    const finalPrice = fallbackPrice; // Gunakan harga langsung dari Supabase
     addToCart(id, name, finalPrice, size, 'single');
     showToast(`Sukses menambah ${name} ke keranjang!`);
 }
@@ -568,7 +568,7 @@ function addSingleClothingToCart(id, name, fallbackPrice, sizeSelectId) {
     let extraCost = 0;
     if (sizeVal === 'XXL') extraCost = 5000;
     
-    const basePrice = productsConfig.singleItems[id] !== undefined ? productsConfig.singleItems[id] : fallbackPrice;
+    const basePrice = fallbackPrice; // Gunakan harga langsung dari Supabase
     const finalPrice = basePrice + extraCost;
     const finalId = `${id}-${sizeVal}`;
     const finalName = `${name} (${sizeVal})`;

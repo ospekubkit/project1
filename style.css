@@ -1833,6 +1833,26 @@ footer {
         flex-direction: column;
         text-align: center;
     }
+    
+    /* Cart Mobile Responsiveness */
+    .cart-item {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .cart-item-details {
+        width: calc(100% - 80px); /* 60px img + 20px gap approx */
+    }
+    
+    .cart-item-actions {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px dashed rgba(255,255,255,0.1);
+        padding-top: 10px;
+        margin-top: 5px;
+    }
 }
 
 /* Floating WA Button */
