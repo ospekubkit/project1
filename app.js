@@ -338,6 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyBatchConfigToDOM();
     initCountdown();
     updateCartUI();
+    setPackageGender('pria');
     
     // Smooth scrolling for hero CTA link
     const btnLearn = document.getElementById('btn-learn-more');
@@ -429,6 +430,7 @@ function setPackageGender(gender) {
     const bottomsLabel = document.getElementById('label-bottoms-size-b');
     const bottomsSelect = document.getElementById('pack-bottoms-size');
     const shoesSelect = document.getElementById('pack-shoes-size');
+    const shirtSelect = document.getElementById('pack-shirt-size');
     const includeBottoms = document.getElementById('include-bottoms-b');
     const includeShoes = document.getElementById('include-shoes-b');
 
@@ -437,6 +439,7 @@ function setPackageGender(gender) {
     const btnWanitaC = document.getElementById('gender-wanita-btn-c');
     const bottomsLabelC = document.getElementById('label-bottoms-size-c');
     const bottomsSelectC = document.getElementById('pack-bottoms-size-c');
+    const shirtSelectC = document.getElementById('pack-shirt-size-c');
     const includeBottomsC = document.getElementById('include-bottoms-c');
 
     if (gender === 'pria') {
@@ -456,6 +459,8 @@ function setPackageGender(gender) {
         if (includeBottomsC) includeBottomsC.innerHTML = `<i class="fa-solid fa-circle-check"></i> Celana Hitam Formal`;
         
         // Options updating
+        if (shirtSelect) shirtSelect.innerHTML = sizesConfig.kemeja.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
+        if (shirtSelectC) shirtSelectC.innerHTML = sizesConfig.kemeja.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         if (bottomsSelect) bottomsSelect.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         if (bottomsSelectC) bottomsSelectC.innerHTML = sizesConfig.celana.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         
@@ -480,6 +485,8 @@ function setPackageGender(gender) {
         if (includeBottomsC) includeBottomsC.innerHTML = `<i class="fa-solid fa-circle-check"></i> Rok Wiru Hitam`;
         
         // Options updating
+        if (shirtSelect) shirtSelect.innerHTML = sizesConfig.kemeja.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
+        if (shirtSelectC) shirtSelectC.innerHTML = sizesConfig.kemeja.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         if (bottomsSelect) bottomsSelect.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         if (bottomsSelectC) bottomsSelectC.innerHTML = sizesConfig.rok.map(s => `<option value="${s}">Ukuran ${s}</option>`).join('');
         
@@ -660,7 +667,7 @@ function updateCartUI() {
         }
     });
 
-    const grandTotalAmount = subtotalAmount + 1000 - referralDiscount; // +1000 admin fee, -discount if valid
+    const grandTotalAmount = subtotalAmount + 4000 - referralDiscount; // +4000 admin fee, -discount if valid
     const virtualSubtotal = grandTotalAmount + discountAmount;
     
     // Display global count bubble
@@ -893,7 +900,7 @@ async function initiateDokuPayment() {
     
     let total = 0;
     cart.forEach(item => total += (item.price * item.quantity));
-    total = total + 1000 - referralDiscount;
+    total = total + 4000 - referralDiscount;
 
     const randomOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
     const urlParams = new URLSearchParams(window.location.search);
@@ -923,7 +930,10 @@ async function initiateDokuPayment() {
 
         if (!response.ok || !result.payment_url) {
             showDokuLoading(false);
-            const errMsg = result.error?.message || result.error || JSON.stringify(result);
+            let errMsg = result.error;
+            if (typeof errMsg === 'object') {
+                errMsg = errMsg.message || errMsg.error?.message || JSON.stringify(errMsg);
+            }
             alert('Gagal membuat transaksi pembayaran: ' + errMsg + '\n\nCoba ulangi atau hubungi admin.');
             return;
         }
