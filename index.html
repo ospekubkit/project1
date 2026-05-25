@@ -580,10 +580,54 @@
         </div>
     </section>
 
-    <!-- QRIS/Doku Modal overlay (unused, kept for compatibility) -->
-    <div class="modal-overlay" id="qris-modal-overlay">
-        <div class="qris-modal" id="modal-qris-scan" style="display:none;"></div>
-        <div class="qris-modal" id="modal-qris-success" style="display:none;"></div>
+    <!-- MANUAL QRIS MODAL -->
+    <div class="modal-overlay" id="manual-qris-overlay">
+        <div class="qris-modal">
+            <button class="qris-close-btn" onclick="closeManualQris()">&times;</button>
+            <div class="qris-header">
+                <h3 style="color: var(--accent); margin-bottom: 5px;">Selesaikan Pembayaran</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Silakan scan QRIS di bawah ini dengan aplikasi M-Banking atau E-Wallet.</p>
+            </div>
+            
+            <div class="qris-image-container">
+                <img src="assets/qris.jpeg" alt="QRIS Payment" class="qris-image">
+            </div>
+            
+            <div class="qris-details">
+                <div class="qris-total" style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1.1rem;">
+                    <span>Total Tagihan:</span>
+                    <strong id="qris-modal-total" style="color: var(--accent);">Rp 0</strong>
+                </div>
+                <div class="qris-timer" style="text-align: center; color: #e74c3c; font-weight: bold; background: rgba(231, 76, 60, 0.1); padding: 8px; border-radius: 8px;">
+                    Sisa Waktu: <span id="qris-countdown">30:00</span>
+                </div>
+            </div>
+
+            <div class="qris-upload-section">
+                <label for="qris-proof-upload" class="qris-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Bukti Transfer (JPG/PNG)
+                </label>
+                <input type="file" id="qris-proof-upload" accept="image/jpeg, image/png, image/jpg" style="display: none;" onchange="handleProofUpload(event)">
+                <div id="qris-upload-filename" class="upload-filename">Belum ada file dipilih</div>
+            </div>
+
+            <button id="btn-submit-qris" class="btn btn-primary btn-full-width" onclick="submitQrisPayment()" disabled>Kirim Bukti Pembayaran</button>
+        </div>
+    </div>
+    
+    <!-- SUCCESS POPUP -->
+    <div class="modal-overlay" id="qris-success-overlay">
+        <div class="qris-success-popup qris-modal">
+            <div class="success-icon-large">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 style="color: var(--accent); margin: 15px 0 10px;">Pesanan Berhasil Dibuat! 🎉</h3>
+            <p style="color: white; font-size: 0.95rem;">Selamat, kamu sudah mengamankan perlengkapan OSPEK-mu!</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                <strong>Invoice lunas</strong> akan dikirimkan ke email kamu setelah pembayaran dikonfirmasi oleh Admin.
+            </p>
+            <button class="btn btn-secondary btn-full-width" style="margin-top: 25px;" onclick="closeSuccessPopup()">Kembali ke Beranda</button>
+        </div>
     </div>
 
     <!-- ==========================================================================
@@ -629,7 +673,7 @@
                 <div style="display: flex; gap: 16px;">
                     <span>S&K Berlaku</span>
                     <span>Kebijakan Privasi</span>
-                    <span>Pembayaran Aman via Doku</span>
+                    <span>Pembayaran via QRIS</span>
                 </div>
             </div>
         </div>

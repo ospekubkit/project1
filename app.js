@@ -667,7 +667,7 @@ function updateCartUI() {
         }
     });
 
-    const grandTotalAmount = subtotalAmount + 4000 - referralDiscount; // +4000 admin fee, -discount if valid
+    const grandTotalAmount = subtotalAmount + 2500 - referralDiscount; // +2500 admin fee, -discount if valid
     const virtualSubtotal = grandTotalAmount + discountAmount;
     
     // Display global count bubble
@@ -887,67 +887,144 @@ async function validateReferralAndProceed() {
     }
     
     updateCartUI();
-    initiateDokuPayment();
+    showQrisPayment();
 }
 
-async function initiateDokuPayment() {
-    // Show loading overlay
-    showDokuLoading(true);
+// Global variables for QRIS
+let qrisSelectedFile = null;
+let currentQrisTotal = 0;
+let currentOrderId = '';
+
+function showQrisPayment() {
+    const overlay = document.getElementById('manual-qris-overlay');
+    if (!overlay) return;
+    
+    // Calculate total
+    let total = 0;
+    cart.forEach(item => total += (item.price * item.quantity));
+    total = total + 2500 - referralDiscount;
+    currentQrisTotal = total;
+    
+    currentOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
+    
+    document.getElementById('qris-modal-total').textContent = formatRupiah(total);
+    
+    // Reset file input
+    qrisSelectedFile = null;
+    document.getElementById('qris-proof-upload').value = '';
+    document.getElementById('qris-upload-filename').textContent = 'Belum ada file dipilih';
+    document.getElementById('btn-submit-qris').disabled = true;
+    
+    // Start Timer
+    clearInterval(qrisTimerInterval);
+    let timeLeft = 30 * 60; // 30 minutes
+    const timerEl = document.getElementById('qris-countdown');
+    
+    qrisTimerInterval = setInterval(() => {
+        timeLeft--;
+        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        if (timerEl) timerEl.textContent = `${m}:${s}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(qrisTimerInterval);
+            closeManualQris();
+            alert('Waktu pembayaran habis. Silakan ulangi proses checkout.');
+        }
+    }, 1000);
+    
+    overlay.style.display = 'flex';
+}
+
+function closeManualQris() {
+    const overlay = document.getElementById('manual-qris-overlay');
+    if (overlay) overlay.style.display = 'none';
+    clearInterval(qrisTimerInterval);
+}
+
+function handleProofUpload(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        qrisSelectedFile = null;
+        document.getElementById('qris-upload-filename').textContent = 'Belum ada file dipilih';
+        document.getElementById('btn-submit-qris').disabled = true;
+        return;
+    }
+    
+    // Validasi ukuran max 5MB
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Ukuran file terlalu besar! Maksimal 5MB.');
+        event.target.value = '';
+        return;
+    }
+    
+    qrisSelectedFile = file;
+    document.getElementById('qris-upload-filename').textContent = file.name;
+    document.getElementById('btn-submit-qris').disabled = false;
+}
+
+async function submitQrisPayment() {
+    if (!qrisSelectedFile) return;
+    
+    const btnSubmit = document.getElementById('btn-submit-qris');
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim data...';
     
     const nameVal = document.getElementById('full-name').value;
     const waVal = document.getElementById('whatsapp-number').value;
     const emailVal = document.getElementById('email-address').value;
     
-    let total = 0;
-    cart.forEach(item => total += (item.price * item.quantity));
-    total = total + 4000 - referralDiscount;
-
-    const randomOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
     const urlParams = new URLSearchParams(window.location.search);
     const affiliateCode = urlParams.get('ref') || (document.getElementById('referral-code')?.value.trim().toUpperCase() || null);
-
+    
     try {
-        const response = await fetch('/api/create-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                orderId: randomOrderId,
-                amount: total,
-                customerName: nameVal,
-                email: emailVal,
-                phone: waVal,
-                items: cart.map(item => ({
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    size: item.size
-                })),
-                affiliateCode: affiliateCode
-            })
-        });
+        // 1. Upload Gambar ke Supabase Storage (bucket: payment-proofs)
+        const fileExt = qrisSelectedFile.name.split('.').pop();
+        const fileName = `${currentOrderId}-${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await db.storage
+            .from('payment-proofs')
+            .upload(fileName, qrisSelectedFile);
+            
+        if (uploadError) throw new Error('Gagal mengupload bukti: ' + uploadError.message);
+        
+        // Ambil URL public
+        const { data: publicUrlData } = db.storage.from('payment-proofs').getPublicUrl(fileName);
+        const proofUrl = publicUrlData.publicUrl;
+        
+        // 2. Insert Order ke tabel Supabase
+        const { error: dbError } = await db.from('orders').insert([{
+            id: currentOrderId,
+            name: nameVal,
+            whatsapp: waVal,
+            email: emailVal,
+            nim: '-',
+            faculty: '-',
+            department: '-',
+            items: cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                size: item.size
+            })),
+            total: currentQrisTotal,
+            status: 'Menunggu Verifikasi',
+            affiliate_code: affiliateCode || null,
+            payment_proof_url: proofUrl
+        }]);
 
-        const result = await response.json();
-
-        if (!response.ok || !result.payment_url) {
-            showDokuLoading(false);
-            let errMsg = result.error;
-            if (typeof errMsg === 'object') {
-                errMsg = errMsg.message || errMsg.error?.message || JSON.stringify(errMsg);
-            }
-            alert('Gagal membuat transaksi pembayaran: ' + errMsg + '\n\nCoba ulangi atau hubungi admin.');
-            return;
-        }
-
-        // Simpan ke localStorage untuk referensi
+        if (dbError) throw new Error('Gagal menyimpan pesanan: ' + dbError.message);
+        
+        // Simpan ke localStorage
         const orderData = {
-            id: randomOrderId,
+            id: currentOrderId,
             date: new Date().toLocaleString('id-ID'),
             name: nameVal,
             whatsapp: waVal,
             email: emailVal,
             items: cart,
-            total: total,
-            status: 'Menunggu Pembayaran'
+            total: currentQrisTotal,
+            status: 'Menunggu Verifikasi'
         };
         let orders = [];
         if (localStorage.getItem('ub_orders')) {
@@ -956,52 +1033,24 @@ async function initiateDokuPayment() {
         orders.unshift(orderData);
         localStorage.setItem('ub_orders', JSON.stringify(orders));
 
-        // Reset cart
+        // Sukses
         cart = [];
         updateCartUI();
-
-        // Redirect ke halaman pembayaran Doku
-        showDokuLoading(false);
-        window.location.href = result.payment_url;
-
+        
+        closeManualQris();
+        document.getElementById('qris-success-overlay').style.display = 'flex';
+        
     } catch (err) {
-        showDokuLoading(false);
-        alert('Terjadi kesalahan jaringan: ' + err.message);
+        alert('Terjadi kesalahan: ' + err.message);
+    } finally {
+        btnSubmit.innerHTML = 'Kirim Bukti Pembayaran';
+        btnSubmit.disabled = false;
     }
 }
 
-function showDokuLoading(show) {
-    let overlay = document.getElementById('doku-loading-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'doku-loading-overlay';
-        overlay.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 22, 24, 0.92); backdrop-filter: blur(8px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; color: white; font-family: 'Poppins', sans-serif;
-        `;
-        overlay.innerHTML = `
-            <div style="text-align: center;">
-                <div style="width:70px;height:70px;border:4px solid rgba(212,175,55,0.3);border-top-color:#D4AF37;
-                    border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
-                <h3 style="font-family:'Montserrat',sans-serif;font-size:1.4rem;color:#D4AF37;margin-bottom:8px;">
-                    Memproses Pesanan...
-                </h3>
-                <p style="opacity:0.7;font-size:0.9rem;">Harap tunggu, kamu akan segera diarahkan ke halaman pembayaran.</p>
-                <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-    }
-    overlay.style.display = show ? 'flex' : 'none';
-}
-
-// Fungsi closeQrisModal tetap ada untuk kompatibilitas (modal sudah diganti Doku)
-function closeQrisModal() {
-    const overlay = document.getElementById('qris-modal-overlay');
-    if (overlay) overlay.classList.remove('active');
-    clearInterval(qrisTimerInterval);
+function closeSuccessPopup() {
+    document.getElementById('qris-success-overlay').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ==========================================================================

@@ -11,10 +11,11 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { orderId, amount, customerName, email, phone, items, affiliateCode } = req.body;
+    const { orderId, customerName, email, phone, items, affiliateCode } = req.body;
+    const amount = parseInt(req.body.amount, 10); // Pastikan integer, bukan string
 
-    if (!orderId || !amount || !customerName || !email) {
-        return res.status(400).json({ error: 'Missing required fields' });
+    if (!orderId || !amount || amount < 1 || !customerName || !email) {
+        return res.status(400).json({ error: 'Missing required fields or invalid amount' });
     }
 
     const clientId = process.env.DOKU_CLIENT_ID; // Merchant ID
