@@ -867,22 +867,23 @@ async function validateReferralAndProceed() {
             const { data, error } = await db.from('affiliates').select('code').eq('code', refCode).single();
             if (error || !data) {
                 if (refStatus) {
-                    refStatus.textContent = 'Kode referral tidak valid atau tidak tersedia.';
-                    refStatus.style.color = '#e74c3c';
+                    refStatus.textContent = 'Kode referral tidak valid. Melanjutkan tanpa diskon...';
+                    refStatus.style.color = '#e67e22';
                 }
-                return;
+                // Lanjutkan tanpa diskon, jangan return
+            } else {
+                if (refStatus) {
+                    refStatus.textContent = 'Kode referral valid! (Diskon Rp 10.000)';
+                    refStatus.style.color = '#2ecc71';
+                }
+                referralDiscount = 10000;
             }
-            if (refStatus) {
-                refStatus.textContent = 'Kode referral valid! (Diskon Rp 10.000)';
-                refStatus.style.color = '#2ecc71';
-            }
-            referralDiscount = 10000;
         } catch (err) {
             if (refStatus) {
-                refStatus.textContent = 'Terjadi kesalahan jaringan saat memvalidasi kode.';
-                refStatus.style.color = '#e74c3c';
+                refStatus.textContent = 'Gagal validasi kode. Melanjutkan tanpa diskon...';
+                refStatus.style.color = '#e67e22';
             }
-            return;
+            // Lanjutkan tanpa diskon, jangan return
         }
     }
     
