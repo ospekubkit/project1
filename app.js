@@ -945,9 +945,9 @@ function showQrisPayment() {
             </div>
             <div style="margin-bottom:16px;">
                 <label for="qris-file-input-dyn" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:rgba(212,175,55,0.08);border:1.5px dashed rgba(212,175,55,0.6);border-radius:10px;color:#D4AF37;cursor:pointer;font-size:0.9rem;font-weight:500;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem;"></i> Upload Bukti Transfer (JPG/PNG)
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem;"></i> Upload Bukti Transfer (JPG, max 1MB)
                 </label>
-                <input type="file" id="qris-file-input-dyn" accept="image/jpeg,image/png,image/jpg" style="display:none;" onchange="handleProofUpload(event)">
+                <input type="file" id="qris-file-input-dyn" accept="image/jpeg,image/jpg" style="display:none;" onchange="handleProofUpload(event)">
                 <div id="qris-filename-dyn" style="text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.45);margin-top:6px;">Belum ada file dipilih</div>
             </div>
             <button id="btn-submit-qris" onclick="submitQrisPayment()" disabled style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#b08d1a);color:#021618;font-size:1rem;font-weight:700;cursor:not-allowed;opacity:0.5;font-family:'Poppins',sans-serif;">
@@ -991,8 +991,8 @@ function handleProofUpload(event) {
         if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.style.opacity = '0.5'; btnSubmit.style.cursor = 'not-allowed'; }
         return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-        alert('Ukuran file terlalu besar! Maksimal 5MB.');
+    if (file.size > 1 * 1024 * 1024) {
+        alert('Ukuran file terlalu besar! Maksimal 1MB. Kompres foto terlebih dahulu.');
         event.target.value = '';
         return;
     }
