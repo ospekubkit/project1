@@ -1003,34 +1003,41 @@ function handleProofUpload(event) {
 
 async function submitQrisPayment() {
     if (!qrisSelectedFile) return;
-    
+
     const btnSubmit = document.getElementById('btn-submit-qris');
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim data...';
-    
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.style.opacity = '0.7';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim data...';
+    }
+
     const nameVal = document.getElementById('full-name').value;
     const waVal = document.getElementById('whatsapp-number').value;
     const emailVal = document.getElementById('email-address').value;
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const affiliateCode = urlParams.get('ref') || (document.getElementById('referral-code')?.value.trim().toUpperCase() || null);
-    
+
+    let proofUrl = null;
+
     try {
-        // 1. Upload Gambar ke Supabase Storage (bucket: payment-proofs)
-        const fileExt = qrisSelectedFile.name.split('.').pop();
-        const fileName = `${currentOrderId}-${Date.now()}.${fileExt}`;
-        
-        const { data: uploadData, error: uploadError } = await db.storage
-            .from('payment-proofs')
-            .upload(fileName, qrisSelectedFile);
-            
-        if (uploadError) throw new Error('Gagal mengupload bukti: ' + uploadError.message);
-        
-        // Ambil URL public
-        const { data: publicUrlData } = db.storage.from('payment-proofs').getPublicUrl(fileName);
-        const proofUrl = publicUrlData.publicUrl;
-        
-        // 2. Insert Order ke tabel Supabase
+        // 1. Coba upload bukti ke Supabase Storage (opsional - tidak blokir jika gagal)
+        try {
+            const fileExt = qrisSelectedFile.name.split('.').pop();
+            const fileName = `${currentOrderId}-${Date.now()}.${fileExt}`;
+            const { error: uploadError } = await db.storage
+                .from('payment-proofs')
+                .upload(fileName, qrisSelectedFile);
+            if (!uploadError) {
+                const { data: pub } = db.storage.from('payment-proofs').getPublicUrl(fileName);
+                proofUrl = pub.publicUrl;
+            }
+        } catch (uploadErr) {
+            // Upload gagal tidak memblokir pengiriman pesanan
+            console.warn('Upload bukti gagal (bucket mungkin belum dibuat):', uploadErr);
+        }
+
+        // 2. Insert Order ke Supabase
         const { error: dbError } = await db.from('orders').insert([{
             id: currentOrderId,
             name: nameVal,
@@ -1052,36 +1059,37 @@ async function submitQrisPayment() {
         }]);
 
         if (dbError) throw new Error('Gagal menyimpan pesanan: ' + dbError.message);
-        
-        // Simpan ke localStorage
+
+        // 3. Simpan ke localStorage
         const orderData = {
             id: currentOrderId,
             date: new Date().toLocaleString('id-ID'),
             name: nameVal,
             whatsapp: waVal,
             email: emailVal,
-            items: cart,
+            items: [...cart],
             total: currentQrisTotal,
             status: 'Menunggu Verifikasi'
         };
-        let orders = [];
-        if (localStorage.getItem('ub_orders')) {
-            orders = JSON.parse(localStorage.getItem('ub_orders'));
-        }
+        let orders = JSON.parse(localStorage.getItem('ub_orders') || '[]');
         orders.unshift(orderData);
         localStorage.setItem('ub_orders', JSON.stringify(orders));
 
-        // Sukses
+        // 4. Sukses!
         cart = [];
         updateCartUI();
-        
         closeManualQris();
         showSuccessPopup();
-        
+
     } catch (err) {
-        alert('Terjadi kesalahan: ' + err.message);
-        const btnSubmit = document.getElementById('btn-submit-qris');
-        if (btnSubmit) { btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran'; btnSubmit.disabled = false; btnSubmit.style.opacity = '1'; btnSubmit.style.cursor = 'pointer'; }
+        alert('Terjadi kesalahan saat mengirim pesanan:\n' + err.message);
+        const btn = document.getElementById('btn-submit-qris');
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        }
     }
 }
 
