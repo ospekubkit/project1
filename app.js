@@ -1055,7 +1055,7 @@ async function submitQrisPayment() {
             total: currentQrisTotal,
             status: 'Menunggu Verifikasi',
             affiliate_code: affiliateCode || null,
-            payment_proof_url: proofUrl
+            proof_url: proofUrl
         }]);
 
         if (dbError) throw new Error('Gagal menyimpan pesanan: ' + dbError.message);
