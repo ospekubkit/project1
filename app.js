@@ -943,15 +943,8 @@ function showQrisPayment() {
                     <strong id="qris-countdown-dyn" style="color:#e74c3c;font-size:1rem;font-family:monospace;">30:00</strong>
                 </div>
             </div>
-            <div style="margin-bottom:16px;">
-                <label for="qris-file-input-dyn" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:rgba(212,175,55,0.08);border:1.5px dashed rgba(212,175,55,0.6);border-radius:10px;color:#D4AF37;cursor:pointer;font-size:0.9rem;font-weight:500;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem;"></i> Upload Bukti Transfer (JPG, max 1MB)
-                </label>
-                <input type="file" id="qris-file-input-dyn" accept="image/jpeg,image/jpg" style="display:none;" onchange="handleProofUpload(event)">
-                <div id="qris-filename-dyn" style="text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.45);margin-top:6px;">Belum ada file dipilih</div>
-            </div>
-            <button id="btn-submit-qris" onclick="submitQrisPayment()" disabled style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#b08d1a);color:#021618;font-size:1rem;font-weight:700;cursor:not-allowed;opacity:0.5;font-family:'Poppins',sans-serif;">
-                <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
+            <button id="btn-submit-qris" onclick="submitQrisPayment()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#b08d1a);color:#021618;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;">
+                <i class="fa-brands fa-whatsapp"></i> Konfirmasi via WhatsApp
             </button>
         </div>
     `;
@@ -1002,13 +995,11 @@ function handleProofUpload(event) {
 }
 
 async function submitQrisPayment() {
-    if (!qrisSelectedFile) return;
-
     const btnSubmit = document.getElementById('btn-submit-qris');
     if (btnSubmit) {
         btnSubmit.disabled = true;
         btnSubmit.style.opacity = '0.7';
-        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim data...';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
     }
 
     const nameVal = document.getElementById('full-name').value;
@@ -1021,22 +1012,6 @@ async function submitQrisPayment() {
     let proofUrl = null;
 
     try {
-        // 1. Coba upload bukti ke Supabase Storage (opsional - tidak blokir jika gagal)
-        try {
-            const fileExt = qrisSelectedFile.name.split('.').pop();
-            const fileName = `${currentOrderId}-${Date.now()}.${fileExt}`;
-            const { error: uploadError } = await db.storage
-                .from('payment-proofs')
-                .upload(fileName, qrisSelectedFile);
-            if (!uploadError) {
-                const { data: pub } = db.storage.from('payment-proofs').getPublicUrl(fileName);
-                proofUrl = pub.publicUrl;
-            }
-        } catch (uploadErr) {
-            // Upload gagal tidak memblokir pengiriman pesanan
-            console.warn('Upload bukti gagal (bucket mungkin belum dibuat):', uploadErr);
-        }
-
         // 2. Insert Order ke Supabase
         const { error: dbError } = await db.from('orders').insert([{
             id: currentOrderId,
@@ -1079,13 +1054,17 @@ async function submitQrisPayment() {
         cart = [];
         updateCartUI();
         closeManualQris();
+        
+        // Langsung arahkan ke WA
+        sendWhatsAppDirectConfirmation(currentOrderId, nameVal, waVal, currentQrisTotal, orderData.items);
+        
         showSuccessPopup();
 
     } catch (err) {
         alert('Terjadi kesalahan saat mengirim pesanan:\n' + err.message);
         const btn = document.getElementById('btn-submit-qris');
         if (btn) {
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran';
+            btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Konfirmasi via WhatsApp';
             btn.disabled = false;
             btn.style.opacity = '1';
             btn.style.cursor = 'pointer';
@@ -1175,6 +1154,33 @@ _Mohon lampirkan screenshoot bukti transfer pembayaran QRIS di bawah ini untuk d
     const waUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${encodeURIComponent(textMessage)}`;
     
     // Open in a new tab
+    window.open(waUrl, '_blank');
+}
+
+function sendWhatsAppDirectConfirmation(orderId, name, wa, total, items) {
+    let itemsText = '';
+    if (items) {
+        items.forEach((item, index) => {
+            itemsText += `\n${index + 1}. *${item.name}* (x${item.quantity})\n   └ _Info/Ukuran: ${item.size}_`;
+        });
+    }
+
+    const textMessage = `*KONFIRMASI PEMBAYARAN OSPEK UB 2026*
+
+*Order ID:* #${orderId}
+------------------------------------------
+*DATA PEMESAN:*
+- *Nama:* ${name}
+- *WhatsApp:* ${wa}
+
+*RINCIAN PESANAN:*${itemsText}
+
+*TOTAL PEMBAYARAN:* ${formatRupiah(total)}
+------------------------------------------
+Halo min, saya mau konfirmasi pembayaran dengan rincian di atas. Berikut adalah bukti transfernya.`;
+
+    const adminPhone = '6285111225515'; 
+    const waUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${encodeURIComponent(textMessage)}`;
     window.open(waUrl, '_blank');
 }
 

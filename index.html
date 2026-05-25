@@ -615,15 +615,8 @@
                 </div>
             </div>
 
-            <div class="qris-upload-section">
-                <label for="qris-proof-upload" class="qris-upload-label">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Bukti Transfer (JPG/PNG)
-                </label>
-                <input type="file" id="qris-proof-upload" accept="image/jpeg, image/png, image/jpg" style="display: none;" onchange="handleProofUpload(event)">
-                <div id="qris-upload-filename" class="upload-filename">Belum ada file dipilih</div>
-            </div>
-
-            <button id="btn-submit-qris" class="btn btn-primary btn-full-width" onclick="submitQrisPayment()" disabled>Kirim Bukti Pembayaran</button>
+            <!-- Bukti transfer via WA -->
+            <button id="btn-submit-qris" class="btn btn-primary btn-full-width" onclick="submitQrisPayment()">Konfirmasi via WhatsApp</button>
         </div>
     </div>
     
