@@ -897,71 +897,108 @@ let currentQrisTotal = 0;
 let currentOrderId = '';
 
 function showQrisPayment() {
-    const overlay = document.getElementById('manual-qris-overlay');
-    if (!overlay) return;
-    
+    // Remove old overlay if exists
+    const oldOverlay = document.getElementById('qris-dynamic-overlay');
+    if (oldOverlay) oldOverlay.remove();
+    clearInterval(qrisTimerInterval);
+
     // Calculate total
     let total = 0;
     cart.forEach(item => total += (item.price * item.quantity));
     total = total + 2500 - referralDiscount;
     currentQrisTotal = total;
-    
     currentOrderId = 'UB-' + Math.floor(100000 + Math.random() * 900000);
-    
-    document.getElementById('qris-modal-total').textContent = formatRupiah(total);
-    
-    // Reset file input
     qrisSelectedFile = null;
-    document.getElementById('qris-proof-upload').value = '';
-    document.getElementById('qris-upload-filename').textContent = 'Belum ada file dipilih';
-    document.getElementById('btn-submit-qris').disabled = true;
-    
-    // Start Timer
-    clearInterval(qrisTimerInterval);
-    let timeLeft = 30 * 60; // 30 minutes
-    const timerEl = document.getElementById('qris-countdown');
-    
+
+    // Build overlay fully via JS (no CSS class dependency)
+    const overlay = document.createElement('div');
+    overlay.id = 'qris-dynamic-overlay';
+    overlay.style.cssText = [
+        'position:fixed', 'top:0', 'left:0', 'width:100%', 'height:100%',
+        'background:rgba(0,0,0,0.88)', 'backdrop-filter:blur(10px)',
+        'z-index:99999', 'display:flex', 'align-items:flex-start',
+        'justify-content:center', 'padding:20px', 'box-sizing:border-box',
+        'overflow-y:auto'
+    ].join(';');
+
+    overlay.innerHTML = `
+        <div style="background:linear-gradient(135deg,#021618,#0a2628);border:1px solid rgba(212,175,55,0.4);border-radius:20px;padding:28px 24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);font-family:'Poppins',sans-serif;position:relative;margin:auto;">
+            <button onclick="closeManualQris()" style="position:absolute;top:14px;right:16px;background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:1.6rem;cursor:pointer;line-height:1;">&times;</button>
+            <div style="text-align:center;margin-bottom:18px;">
+                <h3 style="color:#D4AF37;font-size:1.25rem;margin:0 0 6px;font-family:'Montserrat',sans-serif;"><i class="fa-solid fa-qrcode"></i> Pembayaran QRIS</h3>
+                <p style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin:0;">Scan QR di bawah dengan M-Banking atau E-Wallet kamu</p>
+            </div>
+            <div style="background:white;border-radius:12px;padding:12px;display:flex;justify-content:center;margin-bottom:16px;">
+                <img src="/assets/qris.jpeg" alt="QRIS" style="max-width:100%;height:auto;max-height:280px;border-radius:8px;display:block;"
+                    onerror="this.src='assets/qris.jpeg'">
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="color:rgba(255,255,255,0.7);font-size:0.9rem;">Total Tagihan:</span>
+                    <strong style="color:#D4AF37;font-size:1.15rem;">${formatRupiah(total)}</strong>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.25);border-radius:8px;padding:8px 12px;">
+                    <i class="fa-solid fa-clock" style="color:#e74c3c;"></i>
+                    <span style="color:rgba(255,255,255,0.8);font-size:0.85rem;">Sisa waktu:</span>
+                    <strong id="qris-countdown-dyn" style="color:#e74c3c;font-size:1rem;font-family:monospace;">30:00</strong>
+                </div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label for="qris-file-input-dyn" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:rgba(212,175,55,0.08);border:1.5px dashed rgba(212,175,55,0.6);border-radius:10px;color:#D4AF37;cursor:pointer;font-size:0.9rem;font-weight:500;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.1rem;"></i> Upload Bukti Transfer (JPG/PNG)
+                </label>
+                <input type="file" id="qris-file-input-dyn" accept="image/jpeg,image/png,image/jpg" style="display:none;" onchange="handleProofUpload(event)">
+                <div id="qris-filename-dyn" style="text-align:center;font-size:0.78rem;color:rgba(255,255,255,0.45);margin-top:6px;">Belum ada file dipilih</div>
+            </div>
+            <button id="btn-submit-qris" onclick="submitQrisPayment()" disabled style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#D4AF37,#b08d1a);color:#021618;font-size:1rem;font-weight:700;cursor:not-allowed;opacity:0.5;font-family:'Poppins',sans-serif;">
+                <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Start countdown
+    let timeLeft = 30 * 60;
     qrisTimerInterval = setInterval(() => {
         timeLeft--;
         const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
         const s = (timeLeft % 60).toString().padStart(2, '0');
-        if (timerEl) timerEl.textContent = `${m}:${s}`;
-        
+        const el = document.getElementById('qris-countdown-dyn');
+        if (el) el.textContent = m + ':' + s;
         if (timeLeft <= 0) {
             clearInterval(qrisTimerInterval);
             closeManualQris();
             alert('Waktu pembayaran habis. Silakan ulangi proses checkout.');
         }
     }, 1000);
-    
-    overlay.style.display = 'flex';
 }
 
 function closeManualQris() {
-    const overlay = document.getElementById('manual-qris-overlay');
-    if (overlay) overlay.style.display = 'none';
+    const overlay = document.getElementById('qris-dynamic-overlay');
+    if (overlay) overlay.remove();
     clearInterval(qrisTimerInterval);
 }
 
 function handleProofUpload(event) {
     const file = event.target.files[0];
+    const filenameEl = document.getElementById('qris-filename-dyn');
+    const btnSubmit = document.getElementById('btn-submit-qris');
+
     if (!file) {
         qrisSelectedFile = null;
-        document.getElementById('qris-upload-filename').textContent = 'Belum ada file dipilih';
-        document.getElementById('btn-submit-qris').disabled = true;
+        if (filenameEl) filenameEl.textContent = 'Belum ada file dipilih';
+        if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.style.opacity = '0.5'; btnSubmit.style.cursor = 'not-allowed'; }
         return;
     }
-    
-    // Validasi ukuran max 5MB
     if (file.size > 5 * 1024 * 1024) {
         alert('Ukuran file terlalu besar! Maksimal 5MB.');
         event.target.value = '';
         return;
     }
-    
     qrisSelectedFile = file;
-    document.getElementById('qris-upload-filename').textContent = file.name;
-    document.getElementById('btn-submit-qris').disabled = false;
+    if (filenameEl) filenameEl.textContent = '\u2705 ' + file.name;
+    if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.style.opacity = '1'; btnSubmit.style.cursor = 'pointer'; }
 }
 
 async function submitQrisPayment() {
@@ -1039,18 +1076,41 @@ async function submitQrisPayment() {
         updateCartUI();
         
         closeManualQris();
-        document.getElementById('qris-success-overlay').style.display = 'flex';
+        showSuccessPopup();
         
     } catch (err) {
         alert('Terjadi kesalahan: ' + err.message);
-    } finally {
-        btnSubmit.innerHTML = 'Kirim Bukti Pembayaran';
-        btnSubmit.disabled = false;
+        const btnSubmit = document.getElementById('btn-submit-qris');
+        if (btnSubmit) { btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran'; btnSubmit.disabled = false; btnSubmit.style.opacity = '1'; btnSubmit.style.cursor = 'pointer'; }
     }
 }
 
+function showSuccessPopup() {
+    closeManualQris();
+    const old = document.getElementById('qris-success-overlay-dyn');
+    if (old) old.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'qris-success-overlay-dyn';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+    overlay.innerHTML = `
+        <div style="background:linear-gradient(135deg,#021618,#0a2628);border:1px solid rgba(212,175,55,0.4);border-radius:20px;padding:40px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);font-family:'Poppins',sans-serif;">
+            <div style="font-size:4.5rem;color:#2ecc71;margin-bottom:16px;text-shadow:0 0 30px rgba(46,204,113,0.5);"><i class="fa-solid fa-circle-check"></i></div>
+            <h3 style="color:#D4AF37;font-size:1.4rem;margin:0 0 12px;font-family:'Montserrat',sans-serif;">Pesanan Berhasil Dikirim! \uD83C\uDF89</h3>
+            <p style="color:rgba(255,255,255,0.9);font-size:0.95rem;margin-bottom:16px;line-height:1.6;">Selamat, kamu sudah mengamankan perlengkapan OSPEK-mu!</p>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;margin-bottom:24px;">
+                <p style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin:0;line-height:1.6;">\uD83D\uDCE7 <strong style="color:rgba(255,255,255,0.9);">Invoice lunas</strong> akan dikirimkan ke email kamu setelah pembayaran dikonfirmasi oleh Admin.</p>
+            </div>
+            <button onclick="document.getElementById('qris-success-overlay-dyn').remove();window.scrollTo({top:0,behavior:'smooth'});" style="background:linear-gradient(135deg,#D4AF37,#b08d1a);color:#021618;border:none;border-radius:12px;padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:'Poppins',sans-serif;">Kembali ke Beranda</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
 function closeSuccessPopup() {
-    document.getElementById('qris-success-overlay').style.display = 'none';
+    const el = document.getElementById('qris-success-overlay-dyn');
+    if (el) el.remove();
+    const el2 = document.getElementById('qris-success-overlay');
+    if (el2) el2.remove();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
